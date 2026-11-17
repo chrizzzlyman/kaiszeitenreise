@@ -1,0 +1,16 @@
+{
+  "name": "Kais Zeitenreise",
+  "short_name": "Zeitenreise",
+  "description": "Zeitformen üben mit Kai und dem fliegenden Piratenschiff: Präsens, Präteritum, Perfekt und Futur.",
+  "lang": "de",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#9fdbfb",
+  "theme_color": "#2b7fc4",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
