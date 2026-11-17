@@ -802,7 +802,7 @@
     var rows = D.TENSES.map(function (tt) {
       var tw = D.TIME_WORDS[tt][0];
       var toks = L.buildTokens(it, tt, tw, "S");
-      return '<tr class="' + (tt === t ? "sel" : "") + '" data-t="' + tt + '"><td>' + tname(tt) + "</td><td>" + sentenceHTML(toks, true).replace(/class="w v"/g, 'class="w v" style="color:var(--c-' + tt + ')"') + "</td></tr>";
+      return '<tr class="' + (tt === t ? "sel" : "") + '" data-t="' + tt + '"><td>' + tname(tt) + "</td><td>" + sentenceHTML(toks, true).replace(/class="w v"/g, 'class="w v" style="color:var(--ct-' + tt + ')"') + "</td></tr>";
     }).join("");
     return '<div class="paper fibel-card" data-t="' + t + '"><span class="tense-pill" data-t="' + t + '">' + info.name + " <small>" + info.alt + "</small></span>" +
       '<p class="rule">' + esc(info.formula) + "</p>" +

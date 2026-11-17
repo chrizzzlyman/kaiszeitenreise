@@ -273,19 +273,21 @@
 
     amethyst: () => classicGem("#b58cf0", "#8e5bd6", "#6f3fb8"),
 
-    amber: () => `
-  <path d="M50 8 C74 8 90 28 90 52 C90 76 72 92 50 92 C28 92 10 76 10 52 C10 28 26 8 50 8 Z" fill="#e8860c" ${O}/>
-  <path d="M50 18 C68 18 80 32 80 52 C80 70 68 82 50 82 C32 82 20 70 20 52 C20 32 32 18 50 18 Z" fill="#ffb43a" stroke="${OUT}" stroke-opacity=".35" stroke-width="2.5"/>
-  <ellipse cx="52" cy="54" rx="5" ry="8" fill="#a85a05" transform="rotate(25 52 54)"/>
-  <circle cx="40" cy="62" r="3" fill="#ffd98a" stroke="#c46f0a" stroke-width="1.5"/><circle cx="62" cy="40" r="2.5" fill="#ffd98a" stroke="#c46f0a" stroke-width="1.5"/>
-  <path d="M28 34 Q32 26 40 22" stroke="#fff" stroke-width="5" stroke-linecap="round" fill="none" opacity=".85"/>`,
+    topaz: () => `
+  <path d="M50 5 L95 50 L50 95 L5 50 Z" fill="#f2bb00" ${O}/>
+  <path d="M50 20 L80 50 L50 80 L20 50 Z" fill="#ffd83a" stroke="${OUT}" stroke-opacity=".4" stroke-width="2.5" stroke-linejoin="round"/>
+  <path d="M50 36 L64 50 L50 64 L36 50 Z" fill="#fff1a0" stroke="${OUT}" stroke-opacity=".35" stroke-width="2" stroke-linejoin="round"/>
+  <path d="M50 5 L50 20 M95 50 L80 50 M50 95 L50 80 M5 50 L20 50 M30 28 L36 36 M70 28 L64 36 M30 72 L36 64 M70 72 L64 64" ${GEM_LINE}/>
+  <path d="M24 36 L38 21" stroke="#fff" stroke-width="5" stroke-linecap="round" fill="none" opacity=".9"/>
+  ${SPARK(84, 16, 8)}`,
 
-    sapphire: () => `
-  <circle cx="50" cy="50" r="40" fill="#2a6fd6" ${O}/>
-  <circle cx="50" cy="50" r="27" fill="#5b9cf2" stroke="${OUT}" stroke-opacity=".45" stroke-width="2.5"/>
-  <circle cx="50" cy="50" r="13" fill="#a8cdfa" stroke="${OUT}" stroke-opacity=".35" stroke-width="2"/>
-  <path d="M50 10 V23 M50 77 V90 M10 50 H23 M77 50 H90 M22 22 L31 31 M78 22 L69 31 M22 78 L31 69 M78 78 L69 69" ${GEM_LINE}/>
-  <path d="M24 34 Q28 26 36 21" stroke="#fff" stroke-width="5" stroke-linecap="round" fill="none" opacity=".85"/>`,
+    moonstone: () => `
+  <ellipse cx="50" cy="50" rx="34" ry="43" fill="#8fb0d0" ${O}/>
+  <ellipse cx="50" cy="50" rx="25" ry="33" fill="#bcd2e8" stroke="${OUT}" stroke-opacity=".4" stroke-width="2.5"/>
+  <circle cx="47" cy="52" r="15" fill="#f4f9fd"/>
+  <circle cx="55" cy="47" r="13" fill="#bcd2e8"/>
+  <path d="M28 28 Q32 17 42 12" stroke="#fff" stroke-width="5" stroke-linecap="round" fill="none" opacity=".95"/>
+  ${SPARK(80, 22, 7)}`,
 
     pearl: () => `
   <path d="M12 62 Q8 14 50 12 Q92 14 88 62 Z" fill="#f2c4d6" ${O}/>
@@ -351,7 +353,7 @@
   <path d="M12 78 L7 30 L31 52 L50 16 L69 52 L93 30 L88 78 Z" fill="#f7c948" ${O}/>
   <path d="M12 70 H88 V84 Q88 88 84 88 H16 Q12 88 12 84 Z" fill="#e8a91c" ${O}/>
   <circle cx="7" cy="27" r="6" fill="#d9382f" ${O.replace("3.5", "3")}/><circle cx="50" cy="12" r="7" fill="#d9382f" ${O.replace("3.5", "3")}/><circle cx="93" cy="27" r="6" fill="#d9382f" ${O.replace("3.5", "3")}/>
-  <circle cx="28" cy="79" r="5.5" fill="#2a6fd6" stroke="${OUT}" stroke-width="2.5"/><circle cx="50" cy="79" r="6.5" fill="#d9382f" stroke="${OUT}" stroke-width="2.5"/><circle cx="72" cy="79" r="5.5" fill="#2fa36a" stroke="${OUT}" stroke-width="2.5"/>
+  <circle cx="24" cy="79" r="5" fill="#d9382f" stroke="${OUT}" stroke-width="2.5"/><circle cx="42" cy="79" r="5" fill="#f5c400" stroke="${OUT}" stroke-width="2.5"/><circle cx="60" cy="79" r="5" fill="#2fa36a" stroke="${OUT}" stroke-width="2.5"/><circle cx="78" cy="79" r="5" fill="#9dbad6" stroke="${OUT}" stroke-width="2.5"/>
   <path d="M22 66 L17 42 M44 44 L50 30" stroke="#fff6c8" stroke-width="4.5" stroke-linecap="round" opacity=".85"/>`,
   };
 
@@ -368,8 +370,8 @@
     crown:   { x: 330, y: 104, s: 1.4, r: 0, z: 0 },
     goblet:  { x: 458, y: 120, s: 1.05, r: 6, z: 0 },
     emerald: { x: 212, y: 178, s: .7,  r: -8, z: 1 },
-    amber:   { x: 280, y: 182, s: .7,  r: 6, z: 1 },
-    sapphire:{ x: 380, y: 182, s: .68, r: -6, z: 1 },
+    topaz:   { x: 280, y: 182, s: .7,  r: 6, z: 1 },
+    moonstone:{ x: 380, y: 182, s: .68, r: -6, z: 1 },
     ruby:    { x: 450, y: 180, s: .72, r: 8, z: 1 },
     amethyst:{ x: 254, y: 210, s: .68, r: -5, z: 2 },
     diamond: { x: 332, y: 204, s: .88, r: 2, z: 2 },
