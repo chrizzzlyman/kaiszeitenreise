@@ -1,6 +1,6 @@
 /* ============================================================
    Kais Zeitenreise – Lerninhalte
-   Hier kannst du Verben, Sätze, Texte und Abzeichen anpassen.
+   Hier kannst du Verben, Sätze, Texte und Schätze anpassen.
    Alle Verbformen werden aus dem Verblexikon automatisch erzeugt,
    so müssen nur Verb, Person, Subjekt und Satzrest eingetragen werden.
    ============================================================ */
@@ -335,19 +335,25 @@
     { min: 1500, name: "Käpt'n", art: "ein" },
   ];
 
-  /* ---------- Abzeichen ---------- */
+  /* ---------- Schätze (Erfolge): jeder Erfolg legt ein Schatzstück in die Truhe ----------
+     art = Name der Zeichnung in art.js (KaiArt.treasure) */
   const BADGES = [
-    { id: "first", icon: "🧭", name: "Erste Reise", desc: "Die erste Reise geschafft." },
-    { id: "praesens", icon: "☀️", name: "Präsens-Profi", desc: "8 von 10 gleich richtig im Präsens." },
-    { id: "praeteritum", icon: "📜", name: "Präteritum-Profi", desc: "8 von 10 gleich richtig im Präteritum." },
-    { id: "perfekt", icon: "⚓", name: "Perfekt-Profi", desc: "8 von 10 gleich richtig im Perfekt." },
-    { id: "futur", icon: "🔭", name: "Futur-Profi", desc: "8 von 10 gleich richtig im Futur." },
-    { id: "mix", icon: "🌀", name: "Wilde Mischung", desc: "7 von 10 gleich richtig in der Wilden Mischung." },
-    { id: "perfect", icon: "🎯", name: "Fehlerlos", desc: "Eine ganze Reise ohne Fehler." },
-    { id: "streak", icon: "🔥", name: "Volltreffer-Serie", desc: "5 Aufgaben hintereinander gleich richtig." },
-    { id: "coins", icon: "💰", name: "Goldschatz", desc: "300 Goldmünzen gesammelt." },
-    { id: "rounds", icon: "🏴‍☠️", name: "Echte Seeratte", desc: "10 Reisen beendet." },
-    { id: "master", icon: "👑", name: "Meister der Zeiten", desc: "Alle vier Zeitform-Profis geschafft." },
+    { id: "first", art: "compass", name: "Kompass", desc: "Die erste Reise geschafft." },
+    { id: "rounds3", art: "spyglass", name: "Fernrohr", desc: "3 Reisen geschafft." },
+    { id: "tenses", art: "map", name: "Schatzkarte", desc: "Jede Zeitform einmal geübt." },
+    { id: "praesens", art: "emerald", name: "Smaragd", desc: "8 von 10 gleich richtig im Präsens." },
+    { id: "praeteritum", art: "amethyst", name: "Amethyst", desc: "8 von 10 gleich richtig im Präteritum." },
+    { id: "perfekt", art: "amber", name: "Bernstein", desc: "8 von 10 gleich richtig im Perfekt." },
+    { id: "futur", art: "sapphire", name: "Saphir", desc: "8 von 10 gleich richtig im Futur." },
+    { id: "mix", art: "pearl", name: "Zauberperle", desc: "7 von 10 gleich richtig in der Wilden Mischung." },
+    { id: "stars3", art: "goblet", name: "Goldpokal", desc: "3 Sterne in einer Reise." },
+    { id: "streak", art: "ruby", name: "Feuerrubin", desc: "5 Aufgaben hintereinander gleich richtig." },
+    { id: "perfect", art: "diamond", name: "Diamant", desc: "Eine ganze Reise ohne Fehler." },
+    { id: "redo", art: "key", name: "Schlüssel", desc: "Eine Fehler-Reise geschafft." },
+    { id: "coins", art: "bars", name: "Goldbarren", desc: "300 Goldmünzen gesammelt." },
+    { id: "coins1000", art: "ring", name: "Goldring", desc: "1000 Goldmünzen gesammelt." },
+    { id: "rounds", art: "hat", name: "Piratenhut", desc: "10 Reisen geschafft." },
+    { id: "master", art: "crown", name: "Königskrone", desc: "Alle vier Zeitform-Edelsteine gefunden." },
   ];
 
   return {

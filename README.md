@@ -4,6 +4,7 @@ Eine Übungs-App für die Grundschule (Klasse 3 und 4): Die Kinder üben **Präs
 
 ![Der Hafen](docs/vorschau-hafen.png)
 ![Eine Reise](docs/vorschau-reise.png)
+![Die Schatztruhe](docs/vorschau-truhe.png)
 
 ## Was die App kann
 
@@ -14,7 +15,7 @@ Eine Übungs-App für die Grundschule (Klasse 3 und 4): Die Kinder üben **Präs
   - **Zeitform erkennen:** In der Wilden Mischung bestimmen die Kinder die Zeitform eines Satzes. In einer einzelnen Zeitform suchen sie den Satz, der in dieser Zeitform steht.
   - **Wörter anordnen:** Wortkarten per Tippen oder Ziehen in die richtige Reihenfolge bringen (Verb an zweiter Stelle, Partizip am Satzende).
 - **Zwei Versuche pro Aufgabe:** Beim ersten Fehler erscheint ein kurzer Hinweis, der zum Fehler passt (zum Beispiel „Diese Form gehört zum Präsens. Gesucht ist aber das Perfekt“ oder „Prüfe das Hilfsverb: haben oder sein?“). Beim zweiten Fehler wird die Lösung grün gezeigt. Wer mehr wissen möchte, klappt „Alle Zeitformen von …“ auf. Bei einer richtigen Antwort erscheint nur ein kurzes „Richtig!“ mit den Goldmünzen.
-- **Belohnungen:** Goldmünzen, bis zu 3 Sterne pro Reise, fünf Ränge (Landratte bis Käpt'n) und 11 Abzeichen. Rang und Abzeichen stehen in der Schatztruhe. Tippt man ein Abzeichen an, steht dort, wie man es bekommt.
+- **Schatztruhe:** Goldmünzen, bis zu 3 Sterne pro Reise, fünf Ränge (Landratte bis Käpt'n) und **16 Schätze**. Jeder Erfolg legt ein Schatzstück in die Truhe: für jede Zeitform ein Edelstein in ihrer Farbe (Smaragd, Amethyst, Bernstein, Saphir), ein Diamant für eine fehlerlose Reise, außerdem Goldpokal, Fernrohr, Schatzkarte, Piratenhut und andere. Am Ende wartet die Königskrone. Nach einer Reise fallen neue Schätze sichtbar in die Truhe, und der Münzhaufen wächst mit dem Rang. Tippt man in der Schatztruhe einen Schatz an, steht dort, wie man ihn findet. Bei Spielständen aus früheren Versionen werden fehlende Schätze am Ende der nächsten Reise nachgetragen.
 - **Fehler üben:** Nach jeder Reise können die Kinder die Aufgaben, die nicht geklappt haben, noch einmal üben. Auch in neuen Reisen kommen schwierige Aufgaben häufiger vor.
 - **Kais Piratenfibel:** Eine Zeitreise-Leiste erklärt jede Zeitform mit Merksatz und Signalwörtern. Ein Beispielverb wird in allen vier Zeitformen gezeigt.
 - **Vorlesen:** Der Lautsprecher-Knopf neben der Aufgabe liest sie mit der Sprachausgabe des Geräts vor.
@@ -90,10 +91,14 @@ node tools/check-data.js --print  # gibt alle Sätze zum Korrekturlesen aus
 
 ### Weitere Einstellungen
 
-- **Texte von Kai, Ränge, Abzeichen, Zeitwörter** (gestern, morgen …) stehen ebenfalls in `js/data.js`.
+- **Texte von Kai, Ränge, Schätze, Zeitwörter** (gestern, morgen …) stehen ebenfalls in `js/data.js`.
 - **Farben und Größen** stehen am Anfang von `css/style.css`.
 - **Anzahl der Aufgaben pro Reise:** `var N = 10;` am Anfang von `js/app.js`.
 - **Nach jeder Änderung** in `sw.js` die Zahl bei `CACHE` erhöhen (zum Beispiel `kais-zeitenreise-v3`), damit Tablets mit dem Offline-Speicher die neue Version laden.
+
+### Schätze und Erfolge ändern
+
+Jeder Schatz ist ein Eintrag in `BADGES` in `js/data.js` (Kennung, Zeichnung, Name, Beschreibung). Die Bedingung, wann er vergeben wird, steht in `evalBadges` in `js/app.js`. Die Zeichnung (`TREASURE`) und der Platz in der Truhe (`SLOTS`) stehen in `js/art.js`. Wer einen Schatz ergänzt, braucht alle drei Stellen. `node tools/check-data.js` prüft, ob jeder Schatz eine Zeichnung und einen Platz hat.
 
 ### Adressparameter
 
@@ -107,16 +112,16 @@ Der Ton lässt sich außerdem jederzeit mit dem Lautsprecher-Knopf oben rechts e
 ## Datenschutz
 
 - Die App sendet **keine Daten** an Server. Es gibt kein Tracking, keine Cookies, keine Anmeldung und keine externen Schriften oder Skripte.
-- Münzen, Sterne und Abzeichen werden nur **im Browser des jeweiligen Geräts** gespeichert (`localStorage`), ohne Namen. Mehrere Kinder an einem Gerät teilen sich also den Spielstand. Unter „Meine Schatztruhe“ lässt sich der Fortschritt zurücksetzen.
+- Münzen, Sterne und Schätze werden nur **im Browser des jeweiligen Geräts** gespeichert (`localStorage`), ohne Namen. Mehrere Kinder an einem Gerät teilen sich also den Spielstand. Unter „Schatztruhe“ lässt sich der Fortschritt zurücksetzen.
 
 ## Aufbau
 
 ```
 index.html          Einstieg
 css/style.css       Gestaltung
-js/data.js          Verben, Sätze, Texte, Abzeichen
+js/data.js          Verben, Sätze, Texte, Schätze (Erfolge)
 js/logic.js         Konjugation, Aufgaben, Prüfung (ohne Oberfläche, testbar)
-js/art.js           Grafiken (Kai, Piratenschiff, Inseln, Schatztruhe) als SVG
+js/art.js           Grafiken (Kai, Piratenschiff, Inseln, Schatztruhe mit allen Schätzen) als SVG
 js/sound.js         Klänge (selbst erzeugt, keine Audiodateien)
 js/store.js         Spielstand im Browser
 js/app.js           Bildschirme und Spielablauf

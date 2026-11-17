@@ -103,5 +103,21 @@ console.log("Geprüft: " + D.ITEMS.length + " Sätze, " + Object.keys(D.VERBS).l
   if (L.checkGap(q4, [q4.expected[0], "geversteckt"]).gaps[1].reason.code !== "extraGe") fail("extraGe nicht erkannt");
 })();
 
+// 5) Schätze: Jeder Erfolg braucht eine Zeichnung und einen Platz in der Truhe
+(function () {
+  const Art = require("../js/art.js").KaiArt;
+  const ids = {}, arts = {};
+  D.BADGES.forEach(function (b) {
+    if (!b.id || !b.art || !b.name || !b.desc) fail("Schatz unvollständig: " + JSON.stringify(b));
+    if (ids[b.id]) fail("Schatz-Kennung doppelt: " + b.id);
+    if (arts[b.art]) fail("Zeichnung doppelt verwendet: " + b.art);
+    ids[b.id] = arts[b.art] = true;
+    if (!Art.treasure(b.art)) fail("Keine Zeichnung für " + b.art);
+    if (!Art.SLOTS[b.art]) fail("Kein Platz in der Truhe für " + b.art);
+  });
+  Object.keys(Art.SLOTS).forEach(function (k) { if (!arts[k]) fail("Platz ohne Schatz: " + k); });
+  console.log("Geprüft: " + D.BADGES.length + " Schätze mit Zeichnung und Platz in der Truhe.");
+})();
+
 if (errors) { console.error("\n" + errors + " Fehler gefunden."); process.exit(1); }
 console.log("Alle Prüfungen bestanden.");

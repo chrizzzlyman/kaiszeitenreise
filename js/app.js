@@ -725,7 +725,22 @@
     if (st.coins >= 300) give("coins");
     if (st.rounds >= 10) give("rounds");
     if (st.badges.praesens && st.badges.praeteritum && st.badges.perfekt && st.badges.futur) give("master");
+    if (st.rounds >= 3) give("rounds3");
+    if (info.stars >= 3) give("stars3");
+    if (info.mode === "fehler") give("redo");
+    if (st.played.praesens && st.played.praeteritum && st.played.perfekt && st.played.futur) give("tenses");
+    if (st.coins >= 1000) give("coins1000");
     return got;
+  }
+
+  function badgeById(id) { return D.BADGES.filter(function (x) { return x.id === id; })[0]; }
+  /* Truhen-Szene mit allem, was das Kind schon gefunden hat; freshIds fallen mit Animation hinein */
+  function chestHTML(st, freshIds, label) {
+    var have = {}, fresh = [];
+    D.BADGES.forEach(function (b) { if (st.badges[b.id]) have[b.art] = true; });
+    (freshIds || []).forEach(function (id) { var b = badgeById(id); if (b) fresh.push(b.art); });
+    var level = Math.max(0, D.RANKS.indexOf(L.rankFor(st.coins)));
+    return '<div class="scene-wrap">' + A.chestScene({ have: have, fresh: fresh, level: level, label: label }) + "</div>";
   }
 
   function finishRound() {
@@ -738,14 +753,15 @@
     }
     var perfect = G.firstTry === n;
     if (perfect) st.perfectRounds++;
-    var newBadges = evalBadges(st, { mode: G.mode, firstTry: G.firstTry, n: n });
+    var newBadges = evalBadges(st, { mode: G.mode, firstTry: G.firstTry, n: n, stars: stars });
     Store.save();
     var rankObj = L.rankFor(st.coins), rankNow = rankObj.name, rankUp = rankNow !== G.rankStart;
 
-    var badgeHtml = newBadges.map(function (id) {
-      var bd = D.BADGES.filter(function (x) { return x.id === id; })[0];
-      return '<div class="badge fresh"><div class="medal">' + bd.icon + "</div><b>" + esc(bd.name) + "</b></div>";
+    var badgeHtml = newBadges.map(function (id, i) {
+      var bd = badgeById(id);
+      return '<div class="badge fresh" style="animation-delay:' + (0.9 + i * 0.5).toFixed(2) + 's"><span class="medal">' + A.treasure(bd.art) + "</span><b>" + esc(bd.name) + "</b></div>";
     }).join("");
+    var haveCount = D.BADGES.filter(function (b) { return st.badges[b.id]; }).length;
     var starHtml = "";
     for (var i = 0; i < 3; i++) starHtml += A.star(i < stars);
     var msg = rnd(D.TEXTS.roundEnd[stars]);
@@ -755,11 +771,11 @@
       '<div class="screen result-screen"><div class="topbar"><div class="grow"></div><div class="right">' + coinChip() + soundBtn() + "</div></div>" +
       '<div class="stage"><aside class="kai-col"><div class="kai-box"><div class="kai-fig">' + A.kai() + '</div><div class="speech" id="speech"></div></div></aside>' +
       '<section class="paper result" data-t="' + G.mode + '"><h1>Schatzinsel erreicht!</h1>' +
-      '<div class="chest-wrap">' + A.chest(true) + "</div>" +
+      chestHTML(st, newBadges, "Deine Schatztruhe mit " + haveCount + " von " + D.BADGES.length + " Schätzen") +
       '<div class="stars" role="img" aria-label="' + stars + ' von 3 Sternen">' + starHtml + "</div>" +
       '<div class="facts"><div class="fact"><b>' + G.firstTry + " von " + n + '</b><span>gleich richtig</span></div>' +
       '<div class="fact"><b>+' + (G.coinsGained + bonus) + " " + A.coin() + "</b><span>Goldmünzen</span></div></div>" +
-      (newBadges.length ? '<h2 class="plain-h">' + (newBadges.length > 1 ? "Neue Abzeichen!" : "Neues Abzeichen!") + '</h2><div class="newbadges">' + badgeHtml + "</div>" : "") +
+      (newBadges.length ? '<h2 class="plain-h">' + (newBadges.length > 1 ? "Neue Schätze in der Truhe!" : "Neuer Schatz in der Truhe!") + '</h2><div class="newbadges">' + badgeHtml + "</div>" : "") +
       '<div class="actions" id="resActions">' +
       (G.missed.length
         ? '<button class="btn btn-gold btn-big" data-act="redo">' + A.ICON.anchor + "Fehler üben</button>"
@@ -767,7 +783,8 @@
       '<button class="btn btn-wood btn-big" data-act="home">Zum Hafen</button></div></section></div></div>';
     window.scrollTo(0, 0);
     kaiSay(msg, stars >= 2 ? "cheer" : "happy", 4000);
-    S.fanfare(); if (newBadges.length) later(function () { S.badge(); }, 900);
+    S.fanfare();
+    newBadges.forEach(function (id, i) { later(function () { S.badge(); }, 1300 + i * 500); });
     if (stars >= 2) confetti();
     window.__lastMissed = G.missed;
   }
@@ -836,21 +853,21 @@
     var st = Store.get(), rank = L.rankFor(st.coins), next = L.nextRank(st.coins);
     var pct = next ? Math.round(((st.coins - rank.min) / (next.min - rank.min)) * 100) : 100;
     var earned = D.BADGES.filter(function (b) { return st.badges[b.id]; }).length;
-    var badges = D.BADGES.map(function (b) {
+    var tiles = D.BADGES.map(function (b) {
       var got = !!st.badges[b.id];
-      return '<button type="button" class="badge ' + (got ? "" : "locked") + '" data-act="badge" data-id="' + b.id + '" aria-label="' + esc(b.name) + (got ? ", geschafft" : ", noch nicht geschafft") + '">' +
-        '<span class="medal">' + (got ? b.icon : "?") + "</span><b>" + esc(b.name) + "</b></button>";
+      return '<button type="button" class="badge ' + (got ? "" : "locked") + '" data-act="badge" data-id="' + b.id + '" aria-label="' + esc(b.name) + (got ? ", gefunden" : ", noch nicht gefunden") + '">' +
+        '<span class="medal">' + A.treasure(b.art) + "</span><b>" + esc(b.name) + "</b></button>";
     }).join("");
     $app.innerHTML =
       '<div class="screen truhe"><div class="page-head"><button class="btn btn-light btn-round" data-act="home" aria-label="Zurück zum Hafen">' + A.ICON.back + "</button><h1>Schatztruhe</h1>" +
       '<div class="right" style="margin-left:auto;display:flex;gap:8px">' + soundBtn() + "</div></div>" +
-      '<div class="paper truhe-top"><div class="chest-wrap">' + A.chest(true) + '</div><div class="truhe-info">' +
-      '<div class="rank-name">' + esc(rank.name) + '</div><div class="rank-coins">' + A.coin() + " " + st.coins + " Goldmünzen</div>" +
+      '<div class="paper truhe-top">' + chestHTML(st, [], "Deine Schatztruhe mit " + earned + " von " + D.BADGES.length + " Schätzen") +
+      '<div class="rank-row"><div class="rank-name">' + esc(rank.name) + '</div><div class="rank-coins">' + A.coin() + " " + st.coins + " Goldmünzen</div></div>" +
       (next ? '<div class="rankbar" role="progressbar" aria-label="Fortschritt zum nächsten Rang" aria-valuemin="0" aria-valuemax="100" aria-valuenow="' + pct + '"><i style="width:' + pct + '%"></i></div><small>Noch ' + (next.min - st.coins) + " Münzen bis zum Rang <b>" + esc(next.name) + "</b></small>" : "<p><b>Höchster Rang erreicht!</b></p>") +
-      "</div></div>" +
-      '<h2 class="section-title">Abzeichen: ' + earned + " von " + D.BADGES.length + '</h2>' +
-      '<p class="badge-info" id="badgeInfo" role="status">Tippe auf ein Abzeichen.</p>' +
-      '<div class="badge-grid">' + badges + "</div>" +
+      "</div>" +
+      '<h2 class="section-title">Schätze: ' + earned + " von " + D.BADGES.length + "</h2>" +
+      '<p class="badge-info" id="badgeInfo" role="status">' + (earned ? "Tippe auf einen Schatz." : "Die Truhe ist noch leer. Schaffe Reisen, dann füllt sie sich!") + "</p>" +
+      '<div class="badge-grid">' + tiles + "</div>" +
       '<div class="reset-box"><button class="btn btn-outline btn-small" data-act="reset">Fortschritt zurücksetzen</button>' +
       '<p class="foot-note">Dein Fortschritt bleibt nur auf diesem Gerät. Es werden keine Daten verschickt.</p></div></div>';
     window.scrollTo(0, 0);
@@ -872,7 +889,7 @@
       case "badge":
         S.click();
         var bd = D.BADGES.filter(function (x) { return x.id === b.dataset.id; })[0], got = !!Store.get().badges[bd.id];
-        $("#badgeInfo").textContent = bd.name + (got ? " – geschafft! " : " – so geht’s: ") + bd.desc;
+        $("#badgeInfo").textContent = bd.name + (got ? " – gefunden! " : " – so findest du den Schatz: ") + bd.desc;
         $$(".badge-grid .badge").forEach(function (x) { x.classList.toggle("sel", x === b); });
         break;
       case "start": S.click(); startRound(b.dataset.mode); break;
@@ -887,7 +904,7 @@
         break;
       case "reset":
         S.click();
-        modal({ title: "Wirklich alles löschen?", text: "Deine Münzen, Abzeichen und Sterne werden gelöscht. Das kann man nicht rückgängig machen.", no: "Nein, behalten", yes: "Ja, löschen", onYes: function () { Store.reset(); showTruhe(); } });
+        modal({ title: "Wirklich alles löschen?", text: "Deine Münzen, Schätze und Sterne werden gelöscht. Das kann man nicht rückgängig machen.", no: "Nein, behalten", yes: "Ja, löschen", onYes: function () { Store.reset(); showTruhe(); } });
         break;
     }
   });

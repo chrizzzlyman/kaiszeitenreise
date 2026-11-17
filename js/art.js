@@ -220,5 +220,214 @@
     refresh: `<svg viewBox="0 0 32 32" aria-hidden="true"><path d="M26 16 A10 10 0 1 1 22 8" fill="none" stroke="currentColor" stroke-width="3.6" stroke-linecap="round"/><path d="M17 3 L24 9 L16 13 Z" fill="currentColor"/></svg>`,
   };
 
-  root.KaiArt = { ship, kai, island, coin, star, chest, cloud, skull, ICON };
+  /* ============================================================
+     Schätze: 16 Schatzstücke (je 100 × 100) und die Truhen-Szene
+     ============================================================ */
+  const GEM_LINE = 'stroke="' + OUT + '" stroke-opacity=".5" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" fill="none"';
+  const O = 'stroke="' + OUT + '" stroke-width="3.5" stroke-linejoin="round" stroke-linecap="round"';
+  const SPARK = (x, y, r) => `<path d="M${x} ${y - r} L${x + r * .3} ${y - r * .3} L${x + r} ${y} L${x + r * .3} ${y + r * .3} L${x} ${y + r} L${x - r * .3} ${y + r * .3} L${x - r} ${y} L${x - r * .3} ${y - r * .3} Z" fill="#fff" stroke="#9cc4ea" stroke-width="1.5" stroke-linejoin="round"/>`;
+
+  function classicGem(top, mid, low, extra) {
+    return `<path d="M28 20 H72 L92 42 L50 87 L8 42 Z" fill="${mid}" ${O}/>
+  <path d="M28 20 L38 42 L50 20 L62 42 L72 20 Z" fill="${top}"/>
+  <path d="M8 42 H92 L50 87 Z" fill="${low}"/>
+  <path d="M28 20 H72 L92 42 L50 87 L8 42 Z" fill="none" ${O}/>
+  <path d="M8 42 H92 M28 20 L38 42 M72 20 L62 42 M38 42 L50 20 L62 42 M38 42 L50 87 L62 42" ${GEM_LINE}/>
+  <path d="M20 34 L30 27" stroke="#fff" stroke-width="4.5" stroke-linecap="round" opacity=".85"/>${extra || ""}`;
+  }
+
+  const TREASURE = {
+    compass: () => `
+  <rect x="42" y="8" width="16" height="14" rx="5" fill="#f4b834" ${O}/>
+  <circle cx="50" cy="56" r="36" fill="#f4b834" ${O}/>
+  <circle cx="50" cy="56" r="27" fill="#fff8e1" stroke="#8a5a0a" stroke-width="3"/>
+  <path d="M50 34 V39 M50 73 V78 M28 56 H33 M67 56 H72" stroke="#8a5a0a" stroke-width="3" stroke-linecap="round"/>
+  <path d="M50 32 L59 56 L41 56 Z" fill="#d9382f" ${O.replace("3.5", "2.5")}/>
+  <path d="M50 80 L59 56 L41 56 Z" fill="#fff" ${O.replace("3.5", "2.5")}/>
+  <circle cx="50" cy="56" r="4" fill="#f4b834" stroke="${OUT}" stroke-width="2.2"/>
+  <path d="M22 44 Q26 34 34 28" stroke="#fff6c8" stroke-width="4.5" stroke-linecap="round" fill="none" opacity=".8"/>`,
+
+    spyglass: () => `<g transform="rotate(-32 50 50)">
+  <rect x="10" y="34" width="26" height="32" rx="5" fill="#b87340" ${O}/>
+  <ellipse cx="10" cy="50" rx="4.5" ry="14" fill="#9fdbfb" ${O.replace("3.5", "3")}/>
+  <rect x="34" y="31" width="8" height="38" rx="3" fill="#f4b834" ${O.replace("3.5", "3")}/>
+  <rect x="42" y="39" width="24" height="22" rx="4" fill="#935c2b" ${O}/>
+  <rect x="64" y="36" width="8" height="28" rx="3" fill="#f4b834" ${O.replace("3.5", "3")}/>
+  <rect x="72" y="42" width="19" height="16" rx="4" fill="#b87340" ${O}/>
+  <path d="M16 38 H30" stroke="#fff6c8" stroke-width="4" stroke-linecap="round" opacity=".7"/></g>`,
+
+    map: () => `
+  <path d="M18 22 Q18 15 25 15 H77 Q84 15 84 22 V76 Q84 83 77 83 H25 Q18 83 18 76 Z" fill="#fdf0cc" ${O}/>
+  <path d="M26 40 Q32 30 41 35 Q46 44 36 47 Q25 48 26 40 Z" fill="#7ac27f" stroke="#2f7d4a" stroke-width="2.5" stroke-linejoin="round"/>
+  <path d="M34 72 Q44 54 54 62 T72 46" fill="none" stroke="#935c2b" stroke-width="3.5" stroke-dasharray="1 7" stroke-linecap="round"/>
+  <path d="M62 24 L78 40 M78 24 L62 40" stroke="#d9382f" stroke-width="6" stroke-linecap="round"/>
+  <rect x="9" y="12" width="12" height="76" rx="6" fill="#e8c98a" ${O}/>
+  <rect x="79" y="12" width="12" height="76" rx="6" fill="#e8c98a" ${O}/>`,
+
+    emerald: () => `
+  <path d="M30 14 H70 L90 34 V66 L70 86 H30 L10 66 V34 Z" fill="#2fa36a" ${O}/>
+  <path d="M35 27 H65 L77 39 V61 L65 73 H35 L23 61 V39 Z" fill="#58c98b" stroke="${OUT}" stroke-opacity=".5" stroke-width="2.5" stroke-linejoin="round"/>
+  <path d="M42 37 H58 L66 45 V55 L58 63 H42 L34 55 V45 Z" fill="#9aeab9" stroke="${OUT}" stroke-opacity=".4" stroke-width="2" stroke-linejoin="round"/>
+  <path d="M30 14 L35 27 M70 14 L65 27 M90 34 L77 39 M90 66 L77 61 M70 86 L65 73 M30 86 L35 73 M10 66 L23 61 M10 34 L23 39" ${GEM_LINE}/>
+  <path d="M24 26 L34 18" stroke="#fff" stroke-width="4.5" stroke-linecap="round" opacity=".85"/>`,
+
+    amethyst: () => classicGem("#b58cf0", "#8e5bd6", "#6f3fb8"),
+
+    amber: () => `
+  <path d="M50 8 C74 8 90 28 90 52 C90 76 72 92 50 92 C28 92 10 76 10 52 C10 28 26 8 50 8 Z" fill="#e8860c" ${O}/>
+  <path d="M50 18 C68 18 80 32 80 52 C80 70 68 82 50 82 C32 82 20 70 20 52 C20 32 32 18 50 18 Z" fill="#ffb43a" stroke="${OUT}" stroke-opacity=".35" stroke-width="2.5"/>
+  <ellipse cx="52" cy="54" rx="5" ry="8" fill="#a85a05" transform="rotate(25 52 54)"/>
+  <circle cx="40" cy="62" r="3" fill="#ffd98a" stroke="#c46f0a" stroke-width="1.5"/><circle cx="62" cy="40" r="2.5" fill="#ffd98a" stroke="#c46f0a" stroke-width="1.5"/>
+  <path d="M28 34 Q32 26 40 22" stroke="#fff" stroke-width="5" stroke-linecap="round" fill="none" opacity=".85"/>`,
+
+    sapphire: () => `
+  <circle cx="50" cy="50" r="40" fill="#2a6fd6" ${O}/>
+  <circle cx="50" cy="50" r="27" fill="#5b9cf2" stroke="${OUT}" stroke-opacity=".45" stroke-width="2.5"/>
+  <circle cx="50" cy="50" r="13" fill="#a8cdfa" stroke="${OUT}" stroke-opacity=".35" stroke-width="2"/>
+  <path d="M50 10 V23 M50 77 V90 M10 50 H23 M77 50 H90 M22 22 L31 31 M78 22 L69 31 M22 78 L31 69 M78 78 L69 69" ${GEM_LINE}/>
+  <path d="M24 34 Q28 26 36 21" stroke="#fff" stroke-width="5" stroke-linecap="round" fill="none" opacity=".85"/>`,
+
+    pearl: () => `
+  <path d="M12 62 Q8 14 50 12 Q92 14 88 62 Z" fill="#f2c4d6" ${O}/>
+  <path d="M50 14 V60 M32 20 L36 60 M68 20 L64 60 M20 34 L24 60 M80 34 L76 60" stroke="${OUT}" stroke-opacity=".3" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+  <circle cx="50" cy="56" r="24" fill="#fff" ${O}/>
+  <path d="M34 66 Q40 78 54 78 Q66 76 72 64 Q60 70 34 66 Z" fill="#ffc2e0" opacity=".85"/>
+  <path d="M64 42 Q72 50 70 60 Q64 52 58 46 Z" fill="#b8e0ff" opacity=".9"/>
+  <path d="M30 56 Q30 46 38 40 Q34 50 38 60 Z" fill="#fff0a8" opacity=".9"/>
+  <circle cx="41" cy="46" r="5" fill="#fff"/>
+  <path d="M10 62 Q50 82 90 62 Q90 90 50 91 Q10 90 10 62 Z" fill="#fbdce8" ${O}/>
+  <path d="M30 72 L32 86 M50 76 V90 M70 72 L68 86" stroke="${OUT}" stroke-opacity=".3" stroke-width="2.5" stroke-linecap="round" fill="none"/>`,
+
+    goblet: () => `
+  <path d="M25 24 H12 Q10 52 36 56" fill="none" stroke="${OUT}" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M75 24 H88 Q90 52 64 56" fill="none" stroke="${OUT}" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M25 24 H12 Q10 52 36 56 M75 24 H88 Q90 52 64 56" fill="none" stroke="#f4b834" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M24 12 H76 V38 Q76 62 50 67 Q24 62 24 38 Z" fill="#f4b834" ${O}/>
+  <path d="M32 20 V38 Q32 52 42 58" stroke="#fff6c8" stroke-width="5" stroke-linecap="round" fill="none" opacity=".85"/>
+  <path d="M55 24 L58.5 32 L67 33 L60.8 38.6 L62.6 47 L55 42.8 L47.4 47 L49.2 38.6 L43 33 L51.5 32 Z" fill="#fff6c8" stroke="#a56a00" stroke-width="2" stroke-linejoin="round"/>
+  <rect x="43" y="66" width="14" height="16" fill="#f4b834" ${O}/>
+  <rect x="26" y="80" width="48" height="12" rx="4" fill="#e8a91c" ${O}/>`,
+
+    ruby: () => `
+  <path d="M50 88 C18 64 8 48 8 33 C8 20 18 11 30 11 C40 11 47 17 50 25 C53 17 60 11 70 11 C82 11 92 20 92 33 C92 48 82 64 50 88 Z" fill="#d9382f" ${O}/>
+  <path d="M50 76 C28 58 20 46 20 35 C20 27 26 22 32 22 C40 22 46 28 50 36 C54 28 60 22 68 22 C74 22 80 27 80 35 C80 46 72 58 50 76 Z" fill="#f2665c" stroke="${OUT}" stroke-opacity=".35" stroke-width="2.5"/>
+  <path d="M50 25 V88 M8 33 L50 52 L92 33" ${GEM_LINE}/>
+  <path d="M22 28 Q26 20 34 18" stroke="#fff" stroke-width="5" stroke-linecap="round" fill="none" opacity=".85"/>`,
+
+    diamond: () => classicGem("#f0fbff", "#c8e8ff", "#93cdf5", SPARK(88, 14, 9) + SPARK(12, 72, 6)),
+
+    key: () => `<g transform="rotate(-38 50 50)">
+  <path d="M26 30 a20 20 0 1 0 .01 0 Z M26 41 a9 9 0 1 1 -.01 0 Z" fill="#f4b834" fill-rule="evenodd" ${O}/>
+  <rect x="42" y="43" width="50" height="14" rx="4" fill="#f4b834" ${O}/>
+  <rect x="68" y="55" width="9" height="16" rx="2.5" fill="#f4b834" ${O}/>
+  <rect x="82" y="55" width="9" height="11" rx="2.5" fill="#f4b834" ${O}/>
+  <path d="M46 47 H64" stroke="#fff6c8" stroke-width="3.5" stroke-linecap="round" opacity=".8"/></g>`,
+
+    bars: () => {
+      const bar = (x, y) => `<path d="M${x} ${y + 22} L${x + 6} ${y} H${x + 34} L${x + 40} ${y + 22} Z" fill="#f7c948" ${O}/><path d="M${x + 9} ${y + 6} H${x + 31}" stroke="#fff6c8" stroke-width="4" stroke-linecap="round" opacity=".85"/>`;
+      return bar(8, 66) + bar(52, 66) + bar(30, 42) + `<path d="M40 52 L60 52" stroke="#a56a00" stroke-width="2.5" stroke-linecap="round" opacity=".5"/>`;
+    },
+
+    ring: () => `
+  <ellipse cx="50" cy="64" rx="29" ry="25" fill="none" stroke="${OUT}" stroke-width="15"/>
+  <ellipse cx="50" cy="64" rx="29" ry="25" fill="none" stroke="#f4b834" stroke-width="8"/>
+  <path d="M34 50 Q42 42 52 41" stroke="#fff6c8" stroke-width="3.5" stroke-linecap="round" fill="none" opacity=".8"/>
+  <path d="M34 14 H66 L78 28 L50 52 L22 28 Z" fill="#2ec4b6" ${O}/>
+  <path d="M22 28 H78 M34 14 L40 28 L50 14 L60 28 L66 14 M40 28 L50 52 L60 28" ${GEM_LINE}/>
+  <path d="M30 22 L38 18" stroke="#fff" stroke-width="3.5" stroke-linecap="round" opacity=".85"/>`,
+
+    hat: () => `
+  <path d="M38 22 L62 48 M62 22 L38 48" stroke="#fff" stroke-width="5" stroke-linecap="round" opacity="0"/>
+  <path d="M6 66 C10 34 30 14 50 14 C70 14 90 34 94 66 C76 56 62 54 50 54 C38 54 24 56 6 66 Z" fill="#3a4157" ${O}/>
+  <path d="M6 66 C24 56 38 54 50 54 C62 54 76 56 94 66" fill="none" stroke="#f4b834" stroke-width="5" stroke-linecap="round"/>
+  <path d="M10 70 Q50 92 90 70 Q86 78 50 80 Q14 78 10 70 Z" fill="#2b2f3a" ${O.replace("3.5", "3")}/>
+  <path d="M38 22 L62 44 M62 22 L38 44" stroke="#fff" stroke-width="5" stroke-linecap="round"/>
+  <circle cx="50" cy="32" r="11" fill="#fff" stroke="${OUT}" stroke-width="3"/>
+  <rect x="44" y="38" width="12" height="9" rx="2.5" fill="#fff" stroke="${OUT}" stroke-width="2.6"/>
+  <circle cx="45.5" cy="31" r="2.8" fill="${OUT}"/><circle cx="54.5" cy="31" r="2.8" fill="${OUT}"/>
+  <path d="M20 38 Q26 28 34 24" stroke="#7d86a3" stroke-width="4" stroke-linecap="round" fill="none" opacity=".7"/>`,
+
+    crown: () => `
+  <path d="M12 78 L7 30 L31 52 L50 16 L69 52 L93 30 L88 78 Z" fill="#f7c948" ${O}/>
+  <path d="M12 70 H88 V84 Q88 88 84 88 H16 Q12 88 12 84 Z" fill="#e8a91c" ${O}/>
+  <circle cx="7" cy="27" r="6" fill="#d9382f" ${O.replace("3.5", "3")}/><circle cx="50" cy="12" r="7" fill="#d9382f" ${O.replace("3.5", "3")}/><circle cx="93" cy="27" r="6" fill="#d9382f" ${O.replace("3.5", "3")}/>
+  <circle cx="28" cy="79" r="5.5" fill="#2a6fd6" stroke="${OUT}" stroke-width="2.5"/><circle cx="50" cy="79" r="6.5" fill="#d9382f" stroke="${OUT}" stroke-width="2.5"/><circle cx="72" cy="79" r="5.5" fill="#2fa36a" stroke="${OUT}" stroke-width="2.5"/>
+  <path d="M22 66 L17 42 M44 44 L50 30" stroke="#fff6c8" stroke-width="4.5" stroke-linecap="round" opacity=".85"/>`,
+  };
+
+  function treasure(id, extraClass) {
+    const f = TREASURE[id];
+    if (!f) return "";
+    return `<svg class="art-treasure ${extraClass || ""}" viewBox="0 0 100 100" aria-hidden="true">${f()}</svg>`;
+  }
+
+  /* Plätze der Schatzstücke in der Truhe: x, y = Mitte, s = Größe (1 = 100 Einheiten), r = Drehung, z = Ebene
+     z 0 = hinten, 1 = Mitte, 2 = vorn (halb vom Truhenrand verdeckt), 3 = vor der Truhe auf dem Boden */
+  const SLOTS = {
+    pearl:   { x: 206, y: 130, s: .9,  r: -4, z: 0 },
+    crown:   { x: 330, y: 104, s: 1.4, r: 0, z: 0 },
+    goblet:  { x: 458, y: 120, s: 1.05, r: 6, z: 0 },
+    emerald: { x: 212, y: 178, s: .7,  r: -8, z: 1 },
+    amber:   { x: 280, y: 182, s: .7,  r: 6, z: 1 },
+    sapphire:{ x: 380, y: 182, s: .68, r: -6, z: 1 },
+    ruby:    { x: 450, y: 180, s: .72, r: 8, z: 1 },
+    amethyst:{ x: 254, y: 210, s: .68, r: -5, z: 2 },
+    diamond: { x: 332, y: 204, s: .88, r: 2, z: 2 },
+    spyglass:{ x: 52,  y: 236, s: 1.1, r: -40, z: 3 },
+    hat:     { x: 62,  y: 324, s: 1.05, r: -6, z: 3 },
+    compass: { x: 122, y: 354, s: .6,  r: 0, z: 3 },
+    map:     { x: 616, y: 226, s: .95, r: 8, z: 3 },
+    bars:    { x: 612, y: 322, s: .95, r: 0, z: 3 },
+    ring:    { x: 566, y: 362, s: .52, r: 0, z: 3 },
+    key:     { x: 668, y: 372, s: .56, r: -4, z: 3 },
+  };
+
+  /* Die ganze Truhe. opts.have = { id: true }, opts.fresh = [neue ids], opts.level = Größe des Münzhaufens 0–4 */
+  function chestScene(opts) {
+    opts = opts || {};
+    const have = opts.have || {}, fresh = opts.fresh || [], level = Math.max(0, Math.min(4, opts.level || 0));
+    const ids = Object.keys(SLOTS).filter(function (id) { return have[id]; });
+    function piece(id, i) {
+      const sl = SLOTS[id], isNew = fresh.indexOf(id) >= 0;
+      const k = sl.s;
+      const tr = `translate(${sl.x} ${sl.y}) rotate(${sl.r}) scale(${k}) translate(-50 -50)`;
+      const delay = (0.5 + fresh.indexOf(id) * 0.5).toFixed(2);
+      return `<g transform="${tr}"><g class="t-piece ${isNew ? "t-fresh" : ""}" style="${isNew ? "animation-delay:" + delay + "s" : ""}">` +
+        (isNew ? `<circle class="t-glow" cx="50" cy="50" r="54" fill="#fff3b8" style="animation-delay:${delay}s"/>` : "") +
+        TREASURE[id]() + (isNew ? `<g class="t-twinkle" style="animation-delay:${delay}s">${SPARK(8, 10, 9)}${SPARK(94, 22, 7)}${SPARK(80, 92, 8)}</g>` : "") +
+        `</g></g>`;
+    }
+    const layer = function (z) { return ids.filter(function (id) { return SLOTS[id].z === z; }).map(piece).join(""); };
+    // Münzhaufen wächst mit dem Rang
+    const h = 8 + level * 12;
+    const coinsXY = [[190, 0], [236, 3], [284, 1], [332, 4], [380, 1], [428, 3], [472, 0], [212, 12], [260, 14], [308, 10], [356, 14], [404, 11], [452, 12], [240, 24], [330, 22], [420, 24]];
+    const nCoins = 4 + level * 3;
+    const coins = coinsXY.slice(0, Math.min(coinsXY.length, nCoins)).map(function (c, i) {
+      const lift = Math.max(0, h - 2 - Math.abs(c[0] - 330) * 0.1) * (c[1] / 24 + 0.55);
+      return `<circle cx="${c[0]}" cy="${240 - 8 - lift + c[1] * 0.3}" r="11.5" fill="${i % 2 ? "#f7c948" : "#fde58a"}" stroke="#9a6508" stroke-width="2.8"/>`;
+    }).join("");
+    return `<svg class="art-scene" viewBox="0 0 700 400" role="img" aria-label="${esc(opts.label || "Schatztruhe")}">
+  <ellipse cx="348" cy="372" rx="300" ry="13" fill="#23364f" opacity=".14"/>
+  <path d="M130 244 L168 44 H492 L530 244 Z" fill="#b87340" stroke="${OUT}" stroke-width="5" stroke-linejoin="round"/>
+  <path d="M150 236 L182 62 H478 L510 236 Z" fill="#6e3516" stroke="${OUT}" stroke-width="3" stroke-linejoin="round"/>
+  <path d="M168 44 H492" stroke="#f4b834" stroke-width="9" stroke-linecap="round"/>
+  <path d="M214 74 L192 226 M330 66 V228 M446 74 L468 226" stroke="#8a4a22" stroke-width="3" stroke-dasharray="2 9" stroke-linecap="round" opacity=".7"/>
+  <rect x="150" y="208" width="360" height="44" fill="#3d1d0a"/>
+  <path d="M120 244 Q200 ${240 - h} 330 ${236 - h} Q460 ${240 - h} 540 244 Z" fill="#f7c948" stroke="#9a6508" stroke-width="3" stroke-linejoin="round"/>
+  ${coins}
+  ${layer(0)}${layer(1)}${layer(2)}
+  <rect x="110" y="240" width="440" height="118" rx="12" fill="#9b5f2b" stroke="${OUT}" stroke-width="5"/>
+  <path d="M120 268 H540 M120 312 H540" stroke="#4a2810" stroke-opacity=".25" stroke-width="3.5" stroke-linecap="round"/>
+  <rect x="104" y="230" width="452" height="20" rx="9" fill="#b87340" stroke="${OUT}" stroke-width="5"/>
+  <rect x="185" y="240" width="24" height="118" fill="#f4b834" stroke="#8a5a0a" stroke-width="3.5"/>
+  <rect x="451" y="240" width="24" height="118" fill="#f4b834" stroke="#8a5a0a" stroke-width="3.5"/>
+  <circle cx="197" cy="258" r="3.5" fill="#8a5a0a"/><circle cx="197" cy="338" r="3.5" fill="#8a5a0a"/><circle cx="463" cy="258" r="3.5" fill="#8a5a0a"/><circle cx="463" cy="338" r="3.5" fill="#8a5a0a"/>
+  <rect x="312" y="264" width="36" height="46" rx="7" fill="#f4b834" stroke="#8a5a0a" stroke-width="3.5"/>
+  <circle cx="330" cy="281" r="5" fill="#8a5a0a"/><rect x="327.6" y="282" width="4.8" height="14" rx="2.4" fill="#8a5a0a"/>
+  ${layer(3)}
+</svg>`;
+  }
+  function esc(t) { return String(t).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
+
+  root.KaiArt = { ship, kai, island, coin, star, chest, cloud, skull, ICON, treasure, chestScene, SLOTS };
 })(typeof window !== "undefined" ? window : this);

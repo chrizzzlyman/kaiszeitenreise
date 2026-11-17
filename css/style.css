@@ -312,8 +312,6 @@ html [data-t="perfekt"] { --c: var(--c-perfekt); } html [data-t="futur"] { --c: 
 .result .stars .art-star.on { animation: star-in .6s cubic-bezier(.3,1.8,.5,1) both; }
 .result .stars .art-star.on:nth-child(2) { animation-delay: .25s; } .result .stars .art-star.on:nth-child(3) { animation-delay: .5s; }
 @keyframes star-in { from { transform: scale(0) rotate(-120deg); } to { transform: scale(1) rotate(0); } }
-.result .chest-wrap { width: 130px; margin: 0 auto; }
-.result .chest-wrap svg { width: 100%; height: auto; }
 .result .art-chest.open .chest-coins { animation: pop .6s .3s both; }
 .facts { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 12px 0; }
 .fact { background: #fff; border: 3px solid var(--wood); border-radius: 16px; padding: .4em 1.1em; min-width: 140px; box-shadow: 0 3px 0 var(--wood-dark); }
@@ -321,32 +319,47 @@ html [data-t="perfekt"] { --c: var(--c-perfekt); } html [data-t="futur"] { --c: 
 .fact span { font-size: .85rem; color: var(--ink-soft); }
 .fact .art-coin { width: 26px; height: 26px; vertical-align: -5px; }
 .newbadges { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; margin: 8px 0; }
-.newbadges .badge { min-width: 120px; }
+.newbadges { gap: 10px; }
+.newbadges .badge { flex: 0 0 calc(33.3% - 8px); min-width: 0; max-width: 140px; }
+.newbadges .badge b { font-size: .82rem; overflow-wrap: normal; }
+.newbadges .badge .medal { width: 58px; height: 58px; }
+.newbadges .badge .medal svg { width: 44px; height: 44px; }
 .result .plain-h { font: 700 1.25rem var(--font); letter-spacing: 0; margin: .6em 0 0; color: var(--ink); }
 .result .actions { justify-content: center; margin-top: 14px; }
+.t-piece { transform-box: fill-box; transform-origin: 50% 50%; }
+.t-fresh { animation: treasure-in 1.3s cubic-bezier(.3,1.1,.5,1) both; }
+@keyframes treasure-in { 0% { opacity: 0; transform: translateY(-190px) scale(.5) rotate(-35deg); } 15% { opacity: 1; } 62% { transform: translateY(10px) scale(1.12) rotate(6deg); } 80% { transform: translateY(-8px) scale(.97) rotate(-2deg); } 100% { opacity: 1; transform: none; } }
+.t-glow { transform-box: fill-box; transform-origin: 50% 50%; animation: t-glow 1.7s ease-out both; }
+@keyframes t-glow { 0% { opacity: 0; transform: scale(.3); } 55% { opacity: .55; transform: scale(1); } 100% { opacity: 0; transform: scale(1.35); } }
+.t-twinkle { animation: t-twinkle 1.7s ease-in-out both; }
+@keyframes t-twinkle { 0%, 40% { opacity: 0; } 60% { opacity: 1; } 100% { opacity: 0; } }
+.result .scene-wrap { max-width: 440px; margin-top: 4px; }
+.result .badge.fresh { animation-fill-mode: both; }
 .confetti { position: fixed; inset: 0; z-index: 900; pointer-events: none; overflow: hidden; }
 .confetti i { position: absolute; top: -20px; width: 12px; height: 18px; border-radius: 3px; animation: fall linear forwards; }
 @keyframes fall { to { transform: translate3d(var(--x, 0), 110vh, 0) rotate(var(--r, 720deg)); } }
 
 /* ---------- Abzeichen / Schatztruhe ---------- */
 .badge-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(108px, 1fr)); gap: 10px; margin-top: 8px; }
-.badge { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 6px; padding: .6em .4em; border-radius: 18px; background: #fff; border: 3px solid var(--wood); box-shadow: 0 3px 0 var(--wood-dark); font: inherit; color: var(--ink); }
+.badge { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 6px; padding: .6em .25em; border-radius: 18px; background: #fff; border: 3px solid var(--wood); box-shadow: 0 3px 0 var(--wood-dark); font: inherit; color: var(--ink); }
 button.badge { cursor: pointer; }
 button.badge:active { transform: translateY(2px); box-shadow: none; }
-.badge .medal { width: 58px; height: 58px; border-radius: 50%; display: grid; place-items: center; font-size: 1.8rem; background: radial-gradient(circle at 35% 30%, #fff0b0, #f4b834 70%); border: 4px solid var(--gold-dark); box-shadow: inset 0 -4px 0 rgba(0,0,0,.12); }
-.badge b { font-size: .95rem; line-height: 1.2; }
+.badge .medal { width: 68px; height: 68px; border-radius: 50%; display: grid; place-items: center; background: #fff4d2; border: 3px solid #e2c98a; }
+.badge .medal svg { width: 52px; height: 52px; display: block; }
+.badge b { font-size: .92rem; line-height: 1.2; overflow-wrap: anywhere; }
 .badge.locked { background: rgba(255,255,255,.55); border-style: dashed; }
-.badge.locked .medal { background: #d9d2c0; border-color: #a69d86; filter: grayscale(1); opacity: .6; }
+.badge.locked .medal { background: #ece6d6; border-color: #cfc6ad; }
+.badge.locked .medal svg { filter: grayscale(1) opacity(.42); }
 .badge.sel { outline: 4px solid var(--gold); outline-offset: 2px; }
 .badge.fresh { animation: pop .6s cubic-bezier(.3,1.6,.5,1) both; border-color: var(--gold-dark); background: #fff9d6; }
 .badge-info { margin: 6px 0 4px; min-height: 3em; display: flex; align-items: center; padding: .5em .9em; background: rgba(255,255,255,.9); border: 3px solid var(--wood); border-radius: 16px; font-size: 1.05rem; }
-.truhe-top { display: flex; align-items: center; gap: 16px; }
-.truhe-top .chest-wrap { width: 84px; flex: none; }
-@media (min-width: 600px) { .truhe-top .chest-wrap { width: 120px; } }
-.truhe-top .chest-wrap svg { width: 100%; height: auto; display: block; }
-.truhe-info { flex: 1; min-width: 0; }
+.truhe-top { text-align: center; }
+.scene-wrap { max-width: 720px; margin: 0 auto; }
+.truhe-top.paper { padding-left: clamp(8px, 2vw, 28px); padding-right: clamp(8px, 2vw, 28px); }
+.scene-wrap svg { width: 100%; height: auto; display: block; overflow: visible; }
+.rank-row { display: flex; align-items: baseline; justify-content: center; gap: 8px 16px; flex-wrap: wrap; margin-top: 6px; }
 .rank-name { font-family: var(--font-title); font-size: clamp(1.9rem, 6vw, 2.6rem); line-height: 1; color: var(--wood-dark); }
-.rank-coins { display: flex; align-items: center; gap: .4em; font-weight: 700; font-size: 1.15rem; margin-top: .2em; }
+.rank-coins { display: inline-flex; align-items: center; gap: .4em; font-weight: 700; font-size: 1.15rem; }
 .rank-coins .art-coin { width: 28px; height: 28px; }
 .rankbar { margin: 10px 0 4px; height: 22px; border-radius: 999px; background: rgba(35,54,79,.15); border: 3px solid var(--ink); overflow: hidden; }
 .rankbar > i { display: block; height: 100%; background: repeating-linear-gradient(45deg, #f4b834 0 14px, #ffd567 14px 28px); border-radius: 999px; transition: width .8s ease; }
