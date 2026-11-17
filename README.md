@@ -7,17 +7,17 @@ Eine Übungs-App für die Grundschule (Klasse 3 und 4): Die Kinder üben **Präs
 
 ## Was die App kann
 
-- **Reise wählen:** Die Kinder üben eine einzelne Zeitform (Präsens, Präteritum, Perfekt oder Futur) oder die **Wilde Mischung** mit allen vier Zeitformen.
+- **Reise wählen:** Die Kinder üben eine einzelne Zeitform (Präsens, Präteritum, Perfekt oder Futur) oder die **Wilde Mischung** mit allen vier Zeitformen. Die Startseite zeigt bewusst nur das Wichtigste: Kai, die Reisen und zwei kleine Knöpfe für Fibel und Schatztruhe.
 - **Vier Aufgabentypen**, die sich in jeder Reise abwechseln (10 Aufgaben pro Reise):
   - **Lückentext:** Verb in der richtigen Form eintippen (beim Perfekt und Futur zwei Lücken: Hilfsverb und Partizip bzw. Grundform).
   - **Auswahl:** die richtige von drei Verbformen antippen.
   - **Zeitform erkennen:** In der Wilden Mischung bestimmen die Kinder die Zeitform eines Satzes. In einer einzelnen Zeitform suchen sie den Satz, der in dieser Zeitform steht.
   - **Wörter anordnen:** Wortkarten per Tippen oder Ziehen in die richtige Reihenfolge bringen (Verb an zweiter Stelle, Partizip am Satzende).
-- **Zwei Versuche pro Aufgabe:** Beim ersten Fehler gibt Kai einen Hinweis, der zum Fehler passt (zum Beispiel „Das ist das Präsens, gesucht ist das Perfekt“ oder „Prüfe das Hilfsverb: haben oder sein?“). Beim zweiten Fehler zeigt er die Lösung und alle vier Zeitformen des Verbs.
-- **Belohnungen:** Goldmünzen, bis zu 3 Sterne pro Reise, fünf Ränge (Landratte bis Käpt'n) und 11 Abzeichen.
+- **Zwei Versuche pro Aufgabe:** Beim ersten Fehler erscheint ein kurzer Hinweis, der zum Fehler passt (zum Beispiel „Diese Form gehört zum Präsens. Gesucht ist aber das Perfekt“ oder „Prüfe das Hilfsverb: haben oder sein?“). Beim zweiten Fehler wird die Lösung grün gezeigt. Wer mehr wissen möchte, klappt „Alle Zeitformen von …“ auf. Bei einer richtigen Antwort erscheint nur ein kurzes „Richtig!“ mit den Goldmünzen.
+- **Belohnungen:** Goldmünzen, bis zu 3 Sterne pro Reise, fünf Ränge (Landratte bis Käpt'n) und 11 Abzeichen. Rang und Abzeichen stehen in der Schatztruhe. Tippt man ein Abzeichen an, steht dort, wie man es bekommt.
 - **Fehler üben:** Nach jeder Reise können die Kinder die Aufgaben, die nicht geklappt haben, noch einmal üben. Auch in neuen Reisen kommen schwierige Aufgaben häufiger vor.
-- **Kais Piratenfibel:** Eine Zeitreise-Leiste erklärt jede Zeitform mit Regel, Signalwörtern und Beispielen. Ein Beispielverb wird in allen vier Zeitformen gezeigt.
-- **Vorlesen:** Ein Knopf liest die Aufgabe mit der Sprachausgabe des Geräts vor.
+- **Kais Piratenfibel:** Eine Zeitreise-Leiste erklärt jede Zeitform mit Merksatz und Signalwörtern. Ein Beispielverb wird in allen vier Zeitformen gezeigt.
+- **Vorlesen:** Der Lautsprecher-Knopf neben der Aufgabe liest sie mit der Sprachausgabe des Geräts vor.
 - **Offline-fähig:** Nach dem ersten Laden läuft die App auch ohne Internet. Sie lässt sich auf Tablets zum Startbildschirm hinzufügen.
 - **Barrierefrei gedacht:** mit der Tastatur bedienbar, Farbkontraste nach WCAG AA (automatisch geprüft mit axe), Kais Rückmeldungen werden Screenreadern über eine Live-Region angesagt, die Einstellung „Bewegung reduzieren“ des Geräts wird beachtet. Mit einem echten Screenreader wurde die App noch nicht getestet.
 
@@ -93,7 +93,7 @@ node tools/check-data.js --print  # gibt alle Sätze zum Korrekturlesen aus
 - **Texte von Kai, Ränge, Abzeichen, Zeitwörter** (gestern, morgen …) stehen ebenfalls in `js/data.js`.
 - **Farben und Größen** stehen am Anfang von `css/style.css`.
 - **Anzahl der Aufgaben pro Reise:** `var N = 10;` am Anfang von `js/app.js`.
-- **Nach jeder Änderung** in `sw.js` die Zahl bei `CACHE` erhöhen (`kais-zeitenreise-v2` …), damit Tablets mit dem Offline-Speicher die neue Version laden.
+- **Nach jeder Änderung** in `sw.js` die Zahl bei `CACHE` erhöhen (zum Beispiel `kais-zeitenreise-v3`), damit Tablets mit dem Offline-Speicher die neue Version laden.
 
 ### Adressparameter
 

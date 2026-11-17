@@ -376,7 +376,7 @@
       case "infinitive": return "Hier brauchst du die gebeugte Form, nicht die Grundform.";
       case "typo": return "Fast richtig! Prüfe die Buchstaben noch einmal genau.";
       case "overreg": return "Dieses Verb ist unregelmäßig. Es verändert seinen Stamm.";
-      default: return "Noch nicht ganz. " + D.TENSE_INFO[q.tense].formula;
+      default: return D.TENSE_INFO[q.tense].formula;
     }
   }
 
@@ -388,7 +388,7 @@
   }
 
   function recogHint(q, chosen, final) {
-    if (!final) return "Schau auf das Verb: Wie viele Verbteile siehst du? Steht „werden“ oder „haben/sein“ dabei?";
+    if (!final) return "Zähle die Verbteile. Steht „werden“ oder „haben/sein“ dabei?";
     const clue = {
       praesens: "Es gibt nur ein Verbwort, und es passiert jetzt.",
       praeteritum: "Es gibt nur ein Verbwort, und es erzählt von früher.",

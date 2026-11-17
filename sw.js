@@ -1,7 +1,7 @@
 /* Kais Zeitenreise – Offline-Speicher (Service Worker)
    Die App funktioniert nach dem ersten Laden auch ohne Internet.
    Nach einer Änderung an den Dateien die Zahl in CACHE erhöhen. */
-const CACHE = "kais-zeitenreise-v1";
+const CACHE = "kais-zeitenreise-v2";
 const ASSETS = [
   "./", "index.html", "manifest.webmanifest",
   "css/style.css",

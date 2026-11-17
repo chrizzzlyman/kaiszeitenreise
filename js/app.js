@@ -75,7 +75,7 @@
     return base + "Wortkarten: " + q.shuffled.map(function (k) { return q.tokens[k].text; }).join(", ") + ".";
   }
   function readBtn(id) {
-    return CAN_SPEAK ? '<button class="btn btn-light" id="' + id + '" aria-label="Aufgabe vorlesen">' + A.ICON.sound + "Vorlesen</button>" : "";
+    return CAN_SPEAK ? '<button class="btn btn-light btn-round btn-sm" id="' + id + '" aria-label="Aufgabe vorlesen" title="Aufgabe vorlesen">' + A.ICON.sound + "</button>" : "";
   }
 
   /* ---------- Kai ---------- */
@@ -83,7 +83,7 @@
   function kaiSay(text, mood, revertMs) {
     var sp = $("#speech");
     if (sp) {
-      sp.innerHTML = '<span class="who">Kai</span>' + esc(text);
+      sp.textContent = text;
       sp.classList.remove("pop"); void sp.offsetWidth; sp.classList.add("pop");
     }
     setMood(mood || "happy", revertMs);
@@ -179,52 +179,43 @@
   /* ============================================================
      HAFEN (Startseite)
      ============================================================ */
-  var EXAMPLES = {
-    praesens: "Kai <b>läuft</b> über das Deck.",
-    praeteritum: "Kai <b>lief</b> über das Deck.",
-    perfekt: "Kai <b>ist</b> über das Deck <b>gelaufen</b>.",
-    futur: "Kai <b>wird</b> über das Deck <b>laufen</b>.",
-  };
   function starsRow(n) {
     var h = "";
     for (var i = 0; i < 3; i++) h += A.star(i < n);
-    return '<span class="tc-stars" aria-label="' + n + ' von 3 Sternen">' + h + "</span>";
+    return '<span class="tc-stars" aria-hidden="true">' + h + "</span>";
   }
 
   function showHome() {
     clearTimers(); clearConfetti(); G = null; ORD = null;
-    var st = Store.get(), rank = L.rankFor(st.coins);
+    var st = Store.get();
     var first = st.rounds === 0 && !st.seenIntro;
-    var greet = first ? D.TEXTS.greetFirst : rnd(D.TEXTS.greetBack).replace("{rank}", rank.name);
+    var greet = first ? D.TEXTS.greetFirst : rnd(D.TEXTS.greetBack);
+    function card(t, name, sub, stars, extra) {
+      return '<button class="tense-card ' + (extra || "") + '" data-t="' + t + '" data-act="start" data-mode="' + t + '" aria-label="' + name + " üben, " + sub + ", " + stars + ' von 3 Sternen">' +
+        '<span class="tc-head"><span class="tc-name">' + name + '</span><span class="tc-alt">' + sub + "</span></span>" +
+        '<span class="tc-foot">' + starsRow(stars) + '<span class="tc-go" aria-hidden="true">' + A.ICON.play + "</span></span></button>";
+    }
     var cards = D.TENSES.map(function (t) {
-      var info = D.TENSE_INFO[t];
-      return '<button class="tense-card" data-t="' + t + '" data-act="start" data-mode="' + t + '">' +
-        '<span class="tc-head"><span class="tc-name">' + info.name + '</span><span class="tc-alt">' + info.alt + "</span></span>" +
-        '<span class="tc-ex">' + EXAMPLES[t] + "</span>" + starsRow(st.stars[t] || 0) +
-        '<span class="tc-go">Los geht’s ' + A.ICON.play + "</span></button>";
+      return card(t, D.TENSE_INFO[t].name, D.TENSE_INFO[t].alt, st.stars[t] || 0);
     }).join("");
-    var mix = '<button class="tense-card mix" data-t="mix" data-act="start" data-mode="mix">' +
-      '<span class="tc-head"><span class="tc-name">Wilde Mischung</span><span class="tc-alt">alle vier Zeitformen</span></span>' +
-      '<span class="tc-body"><span class="tc-ex">Präsens, Präteritum, Perfekt und Futur wild durcheinander. Für echte Zeitenmeister!</span>' +
-      starsRow(st.stars.mix || 0) + '<span class="tc-go">Los geht’s ' + A.ICON.play + "</span></span></button>";
+    var mix = card("mix", "Wilde Mischung", "alle vier Zeitformen", st.stars.mix || 0, "mix");
 
     $app.innerHTML =
       '<div class="screen home">' +
-      '<div class="topbar"><div class="grow"></div><div class="right">' + coinChip() + '<span class="chip plain" title="Dein Rang">' + esc(rank.name) + "</span>" + soundBtn() + "</div></div>" +
+      '<div class="topbar"><div class="grow"></div><div class="right">' + coinChip() + soundBtn() + "</div></div>" +
       '<div class="home-hero">' +
-      '<div class="logo"><h1>Kais Zeitenreise</h1><p>Zeitformen üben mit dem fliegenden Piratenschiff</p></div>' +
+      '<div class="logo"><h1>Kais Zeitenreise</h1></div>' +
       '<div class="hero-ship">' + A.ship() + "</div>" +
       '<div class="hero-kai"><div class="kai-fig">' + A.kai() + '</div><div class="speech" id="speech"></div></div>' +
       "</div>" +
-      '<h2 class="section-title">Wähle deine Reise</h2>' +
+      '<h2 class="sr-only">Wähle deine Reise</h2>' +
       '<div class="tense-grid">' + cards + mix + "</div>" +
       '<div class="home-links">' +
-      '<button class="btn btn-wood btn-big" data-act="fibel">' + A.ICON.book + "Kais Piratenfibel</button>" +
-      '<button class="btn btn-gold btn-big" data-act="truhe">' + A.ICON.chest + "Meine Schatztruhe</button></div>" +
-      '<p class="foot-note">Dein Fortschritt bleibt nur auf diesem Gerät gespeichert. Es werden keine Daten an andere geschickt.</p>' +
+      '<button class="btn btn-wood" data-act="fibel">' + A.ICON.book + "Piratenfibel</button>" +
+      '<button class="btn btn-gold" data-act="truhe">' + A.ICON.chest + "Schatztruhe</button></div>" +
       "</div>";
     var k = $(".art-kai"); if (k) k.dataset.wave = "1";
-    var sp = $("#speech"); sp.innerHTML = '<span class="who">Kai</span>' + esc(greet);
+    var sp = $("#speech"); sp.textContent = greet;
     announce("Kai sagt: " + greet);
     st.seenIntro = true; Store.save();
     window.scrollTo(0, 0);
@@ -247,13 +238,13 @@
     $app.innerHTML =
       '<div class="screen game" data-t="' + mode + '">' +
       '<div class="topbar"><button class="btn btn-light btn-round" data-act="leave" aria-label="Zurück zum Hafen" title="Zurück zum Hafen">' + A.ICON.back + "</button>" +
-      '<div class="grow"><h1>' + modeTitle(mode) + '</h1></div><div class="right">' + coinChip() + soundBtn() + "</div></div>" +
+      '<div class="grow"><h1 class="sr-only">' + modeTitle(mode) + '</h1><span class="chip plain counter" id="counter"></span></div><div class="right">' + coinChip() + soundBtn() + "</div></div>" +
       '<div class="route" id="route" style="--p:0;--n:' + G.n + '">' +
       '<div class="layer layer-1"></div><div class="layer layer-2"></div><div class="route-line"></div>' + pips +
       '<div class="island-start">' + A.island() + "</div>" +
       '<div class="island-end" id="isleEnd">' + A.island("treasure") + "</div>" +
       '<div class="ship-wrap" id="shipWrap">' + A.ship() + "</div>" +
-      '<div class="counter" id="counter"></div></div>' +
+      '</div>' +
       '<div class="stage"><aside class="kai-col"><div class="kai-box"><div class="kai-fig">' + A.kai() + '</div><div class="speech" id="speech"></div></div></aside>' +
       '<section class="paper task" id="task"></section></div></div>';
     window.scrollTo(0, 0);
@@ -262,25 +253,21 @@
     kaiSay(D.TEXTS.start[mode], "happy");
   }
 
-  var NUDGES = ["Weiter geht’s!", "Die nächste Aufgabe wartet!", "Volle Kraft voraus!", "Schau genau hin!", "Lies den Satz in Ruhe.", "Du bist gut dabei!", "Setz die Segel für die nächste Aufgabe!"];
+  var NUDGES = ["Weiter geht’s!", "Volle Kraft voraus!", "Schau genau hin!", "Lies den Satz in Ruhe.", "Du bist gut dabei!"];
 
   function showQuestion(isFirst) {
     var q = cur();
     G.attempt = 0; G.answered = false; ORD = null;
     var task = $("#task");
     task.dataset.t = q.tense;
-    $("#counter").textContent = "Aufgabe " + (G.idx + 1) + " von " + G.n;
-    var info = D.TENSE_INFO[q.tense];
-    var head;
-    if (q.type === "recog") head = '<div class="task-head"><span class="tense-pill" style="--c:#4b5f7c">Zeitform erkennen</span></div>';
-    else head = '<div class="task-head"><span class="tense-pill" data-t="' + q.tense + '">' + info.name + " <small>" + info.alt + '</small></span><span class="formula">' + esc(info.formula) + "</span></div>";
+    $("#counter").innerHTML = '<span class="sr-only">Aufgabe </span>' + (G.idx + 1) + " / " + G.n;
     var body;
     if (q.type === "gap") body = renderGap(q);
     else if (q.type === "mc") body = renderMc(q);
     else if (q.type === "recog") body = renderRecog(q);
     else if (q.type === "find") body = renderFind(q);
     else body = renderOrder(q);
-    task.innerHTML = head + body + '<div id="fbArea"></div><div class="actions" id="actions">' + actionsFor(q) + "</div>";
+    task.innerHTML = promptRow(q) + body + '<div id="fbArea"></div><div class="actions" id="actions">' + actionsFor(q) + "</div>";
     bindQuestion(q);
     if (!isFirst) { kaiSay(rnd(NUDGES), "happy"); window.scrollTo({ top: 0, behavior: "smooth" }); }
     announce("Aufgabe " + (G.idx + 1) + " von " + G.n + ". " + promptText(q));
@@ -290,16 +277,24 @@
     var n = tname(q.tense);
     switch (q.type) {
       case "gap": return "Setze das Verb ins " + n + ".";
-      case "mc": return "Tippe auf die richtige Form im " + n + ".";
-      case "order": return "Bringe die Wortkarten in die richtige Reihenfolge. Der Satz steht im " + n + ".";
+      case "mc": return "Wähle die richtige Form im " + n + ".";
+      case "order": return "Ordne die Wörter zu einem Satz im " + n + ".";
       case "recog": return "In welcher Zeitform steht der Satz?";
       case "find": return "Welcher Satz steht im " + n + "?";
     }
     return "";
   }
+  function promptHTML(q) {
+    var t = esc(promptText(q));
+    if (q.type !== "recog") t = t.replace(tname(q.tense), '<span class="tw" data-t="' + q.tense + '">' + tname(q.tense) + "</span>");
+    return t;
+  }
+  function promptRow(q) {
+    return '<div class="prompt-row"><p class="prompt">' + promptHTML(q) + "</p>" + readBtn("btnRead") + "</div>";
+  }
   function actionsFor(q) {
     var check = (q.type === "gap" || q.type === "order") ? '<button class="btn btn-green btn-big" id="btnCheck">' + A.ICON.check + "Prüfen</button>" : "";
-    return check + '<button class="btn btn-light" id="btnTip">' + A.ICON.bulb + "Tipp</button>" + readBtn("btnRead");
+    return check + '<button class="btn btn-light" id="btnTip">' + A.ICON.bulb + "Tipp</button>";
   }
 
   /* ----- Lückentext ----- */
@@ -314,9 +309,8 @@
       }
       return wordSpan(t, i, false);
     });
-    return '<p class="prompt">' + esc(promptText(q)) + "</p>" +
-      '<p class="sentence">' + parts.join(" ") + '.<span class="hint-inf" title="Grundform">(' + esc(q.verb) + ")</span></p>" +
-      '<div class="umlaut-bar"><span>Sonderzeichen:</span>' + ["ä", "ö", "ü", "ß"].map(function (c) { return '<button type="button" data-ch="' + c + '" aria-label="' + c + ' einfügen">' + c + "</button>"; }).join("") + "</div>";
+    return '<p class="sentence">' + parts.join(" ") + '.<span class="hint-inf" title="Grundform">(' + esc(q.verb) + ")</span></p>" +
+      '<div class="umlaut-bar" role="group" aria-label="Sonderzeichen">' + ["ä", "ö", "ü", "ß"].map(function (c) { return '<button type="button" data-ch="' + c + '" aria-label="' + c + ' einfügen">' + c + "</button>"; }).join("") + "</div>";
   }
 
   /* ----- Auswahl ----- */
@@ -326,34 +320,29 @@
       if (t.role === "fin" || t.role === "v2") { return '<span class="gap-fill" data-gap="' + (gi++) + '"> … </span>'; }
       return wordSpan(t, i, false);
     });
-    return '<p class="prompt">' + esc(promptText(q)) + "</p>" +
-      '<p class="sentence">' + parts.join(" ") + '.<span class="hint-inf" title="Grundform">(' + esc(q.verb) + ")</span></p>" +
+    return '<p class="sentence">' + parts.join(" ") + '.<span class="hint-inf" title="Grundform">(' + esc(q.verb) + ")</span></p>" +
       '<div class="options" role="group" aria-label="Antworten">' +
       q.options.map(function (o, i) { return '<button class="opt" data-i="' + i + '">' + esc(o.label) + "</button>"; }).join("") + "</div>";
   }
 
   /* ----- Zeitform erkennen ----- */
   function renderRecog(q) {
-    return '<p class="prompt">' + esc(promptText(q)) + "</p>" +
-      '<p class="sentence">' + sentenceHTML(q.tokens, false) + "</p>" +
+    return '<p class="sentence">' + sentenceHTML(q.tokens, false) + "</p>" +
       '<div class="options" role="group" aria-label="Zeitformen">' +
-      q.options.map(function (t) { return '<button class="opt tense-opt" data-t="' + t + '" data-tense="' + t + '">' + tname(t) + "<small>" + D.TENSE_INFO[t].alt + "</small></button>"; }).join("") + "</div>";
+      q.options.map(function (t) { return '<button class="opt tense-opt" data-t="' + t + '" data-tense="' + t + '">' + tname(t) + "</button>"; }).join("") + "</div>";
   }
 
   /* ----- Satz in der gesuchten Zeitform finden ----- */
   function renderFind(q) {
-    return '<p class="prompt">' + esc(promptText(q)) + "</p>" +
-      '<div class="options sentences" role="group" aria-label="Sätze">' +
+    return '<div class="options sentences" role="group" aria-label="Sätze">' +
       q.options.map(function (o, i) { return '<button class="opt sent" data-i="' + i + '">' + sentenceHTML(o.tokens, false) + "</button>"; }).join("") + "</div>";
   }
 
   /* ----- Wörter anordnen ----- */
   function renderOrder(q) {
     ORD = { line: [], bank: q.shuffled.slice(), q: q, done: false, suppress: false };
-    return '<p class="prompt">' + esc(promptText(q)) + "</p>" +
-      '<p class="order-hint">Tippe eine Karte an oder ziehe sie mit dem Finger. Tippst du eine Karte im Satz an, springt sie zurück.</p>' +
-      '<div class="slotline" id="line" aria-label="Dein Satz"></div>' +
-      '<div class="bank" id="bank" aria-label="Wortkarten"></div>';
+    return '<div class="slotline" id="line" role="group" aria-label="Dein Satz"></div>' +
+      '<div class="bank" id="bank" role="group" aria-label="Wortkarten"></div>';
   }
   function drawOrder() {
     var q = ORD.q;
@@ -368,7 +357,7 @@
       toks.push('<span class="lastgroup">' + toks.pop() + '<span class="dot" aria-hidden="true">.</span></span>');
       line.innerHTML = toks.join("");
     } else {
-      line.innerHTML = '<span class="placeholder">Lege hier deinen Satz zusammen \u2026</span>';
+      line.innerHTML = '<span class="placeholder">Tippe die Wörter in der richtigen Reihenfolge an.</span>';
     }
     bank.innerHTML = ORD.bank.map(function (id) { return tok(id, false, 0); }).join("");
     var chk = $("#btnCheck"); if (chk) chk.disabled = ORD.bank.length > 0 || ORD.done;
@@ -424,34 +413,29 @@
   function showTip() {
     var q = cur(), info = D.TENSE_INFO[q.tense];
     var text = q.type === "recog"
-      ? "Schau auf das Verb: Nur ein Verbwort? Dann Präsens oder Präteritum. „haben/sein“ + Partizip ist Perfekt, „werden“ + Grundform ist Futur."
-      : info.rule + " " + info.tip;
+      ? "Ein Verbwort: Präsens oder Präteritum. „haben/sein“ + Partizip: Perfekt. „werden“ + Grundform: Futur."
+      : info.formula;
     kaiSay(text, "think", 6000);
   }
 
   /* ----- Rückmeldungen ----- */
   function banner(kind, title, html) {
     var icon = kind === "ok" ? A.ICON.check : kind === "bad" ? "<b aria-hidden=\"true\">!</b>" : A.ICON.bulb;
-    $("#fbArea").innerHTML = '<div class="feedback ' + kind + '" role="status"><div class="ficon">' + icon + "</div><div><div class=\"ftitle\">" + title + "</div>" + html + "</div></div>";
-  }
-  function solutionHTML(q) {
-    if (q.type === "recog") return sentenceHTML(q.tokens, true) + " → <b>" + tname(q.answer) + "</b>";
-    if (q.type === "find") return sentenceHTML(q.options[q.correctIndex].tokens, true);
-    return sentenceHTML(q.tokens, true);
+    $("#fbArea").innerHTML = '<div class="feedback ' + kind + '" role="status"><div class="ficon">' + icon + "</div><div>" + (title ? '<div class="ftitle">' + title + "</div>" : "") + html + "</div></div>";
   }
   function merkHTML(q) {
     var f = q.forms;
     var items = D.TENSES.map(function (t) {
-      return '<span class="m" data-t="' + t + '">' + tname(t) + ": <i>" + esc(f[t].join(" ")) + "</i></span>";
-    }).join(" ");
-    return '<div class="merk"><b>Merk dir: ' + esc(q.verb) + "</b><br>" + items + "</div>";
+      return '<span class="m" data-t="' + t + '"><b>' + tname(t) + "</b> " + esc(f[t].join(" ")) + "</span>";
+    }).join("");
+    return '<details class="merk"><summary>Alle Zeitformen von „' + esc(q.verb) + "“</summary><div class=\"merk-rows\">" + items + "</div></details>";
   }
 
   function wrongAttempt(hint) {
     G.attempt = 1;
     S.wrong();
     wobble();
-    banner("bad", "Noch nicht ganz", "<p>" + esc(hint) + "</p>");
+    banner("bad", "", "<p>" + esc(hint) + "</p>");
     kaiSay(rnd(D.TEXTS.wrongFirst), "oops");
   }
 
@@ -486,12 +470,19 @@
     G.done++;
     moveShip();
 
-    var title, cls;
-    if (kind === "reveal") { title = "So geht es richtig"; cls = "reveal"; S.drop(); }
-    else { title = kind === "first" ? "Richtig!" : "Geschafft!"; cls = "ok"; S.correct(); if (gain) later(function () { S.coin(); }, 260); }
+    var title, cls, body = "";
+    if (kind === "reveal") {
+      cls = "reveal"; S.drop();
+      title = q.type === "recog" ? "" : q.type === "find" ? "Dieser Satz passt." : "Merk dir die grüne Lösung.";
+      if (note) body += "<p>" + esc(note) + "</p>";
+      body += merkHTML(q);
+    } else {
+      cls = "ok"; S.correct(); if (gain) later(function () { S.coin(); }, 260);
+      title = kind === "first" ? "Richtig!" : "Geschafft!";
+      if (note) body += "<p>" + esc(note) + "</p>";
+    }
     var coinHtml = gain ? '<span class="coin-gain">+' + gain + " " + A.coin() + "</span>" : "";
-    var noteHtml = note ? "<p>" + esc(note) + "</p>" : "";
-    banner(cls, title + coinHtml, noteHtml + '<div class="solution">' + solutionHTML(q) + "</div>" + merkHTML(q));
+    banner(cls, title + coinHtml, body);
     if (gain) { var ci = $("#fbArea .coin-gain svg"); later(function () { flyCoin(ci); }, 200); }
 
     if (kind === "first") kaiSay(rnd(D.TEXTS.correct), "cheer");
@@ -499,12 +490,7 @@
     else kaiSay(rnd(D.TEXTS.reveal), "think", 3500);
 
     var last = G.idx >= G.n - 1;
-    $("#actions").innerHTML = '<button class="btn btn-gold btn-big" id="btnNext">' + (last ? "Zur Schatzinsel!" : "Weiter") + A.ICON.play + "</button>" + readBtn("btnRead2");
-    var rd2 = $("#btnRead2");
-    if (rd2) rd2.onclick = function () {
-      var toks = q.type === "find" ? q.options[q.correctIndex].tokens : q.tokens;
-      speak(L.sentenceText(toks));
-    };
+    $("#actions").innerHTML = '<button class="btn btn-gold btn-big" id="btnNext">' + (last ? "Zur Schatzinsel!" : "Weiter") + A.ICON.play + "</button>";
     var nb = $("#btnNext");
     nb.onclick = function () { S.click(); if (last) finishRound(); else { G.idx++; showQuestion(); } };
     setTimeout(function () { try { nb.focus({ preventScroll: true }); } catch (e) { nb.focus(); } nb.scrollIntoView({ block: "nearest", behavior: "smooth" }); }, 250);
@@ -517,13 +503,13 @@
     var answers = inputs.map(function (i) { return i.value; });
     var empty = inputs.find(function (i) { return !i.value.trim(); });
     if (empty) {
-      banner("bad", "Da fehlt noch etwas", "<p>Schreibe etwas in jede Lücke.</p>");
+      banner("bad", "", "<p>Schreibe etwas in jede Lücke.</p>");
       empty.focus(); return;
     }
     var res = L.checkGap(q, answers);
     if (res.ok) {
       inputs.forEach(function (inp, k) { inp.value = q.expected[k]; inp.classList.remove("bad"); inp.classList.add("ok"); inp.readOnly = true; });
-      complete(G.attempt === 0 ? "first" : "second", res.translit ? "Tipp: Mit Umlauten schreibst du ä, ö, ü und ß. Das findest du unter dem Satz." : "");
+      complete(G.attempt === 0 ? "first" : "second", res.translit ? "Mit Umlauten schreibst du ä, ö, ü und ß." : "");
       return;
     }
     if (G.attempt === 0) {
@@ -618,7 +604,7 @@
     if (G.answered || !ORD) return;
     var q = cur();
     if (ORD.bank.length) {
-      banner("bad", "Da fehlt noch etwas", "<p>Alle Wortkarten gehören in den Satz.</p>"); return;
+      banner("bad", "", "<p>Alle Wortkarten gehören in den Satz.</p>"); return;
     }
     var built = builtTexts();
     var res = L.checkOrder(q, built);
@@ -757,17 +743,9 @@
     var rankObj = L.rankFor(st.coins), rankNow = rankObj.name, rankUp = rankNow !== G.rankStart;
 
     var badgeHtml = newBadges.map(function (id) {
-      var b = D.BADGES.filter(function (x) { return x.id === id; })[0];
-      return '<div class="badge fresh"><div class="medal">' + b.icon + "</div><b>" + esc(b.name) + "</b><small>" + esc(b.desc) + "</small></div>";
+      var bd = D.BADGES.filter(function (x) { return x.id === id; })[0];
+      return '<div class="badge fresh"><div class="medal">' + bd.icon + "</div><b>" + esc(bd.name) + "</b></div>";
     }).join("");
-    var missedHtml = "";
-    if (G.missed.length) {
-      missedHtml = '<div class="missed" data-t="mix"><h2>Diese Aufgaben üben wir noch:</h2><ul>' + G.missed.map(function (m) {
-        var it = D.ITEMS[m.itemId];
-        var toks = L.buildTokens(it, m.tense, D.TIME_WORDS[m.tense][0], "S");
-        return '<li data-t="' + m.tense + '"><b>' + tname(m.tense) + ":</b> " + sentenceHTML(toks, true) + "</li>";
-      }).join("") + "</ul></div>";
-    }
     var starHtml = "";
     for (var i = 0; i < 3; i++) starHtml += A.star(i < stars);
     var msg = rnd(D.TEXTS.roundEnd[stars]);
@@ -780,21 +758,18 @@
       '<div class="chest-wrap">' + A.chest(true) + "</div>" +
       '<div class="stars" role="img" aria-label="' + stars + ' von 3 Sternen">' + starHtml + "</div>" +
       '<div class="facts"><div class="fact"><b>' + G.firstTry + " von " + n + '</b><span>gleich richtig</span></div>' +
-      '<div class="fact"><b>' + (G.coinsGained + bonus) + " " + A.coin() + '</b><span>Goldmünzen (' + bonus + " Bonus)</span></div>" +
-      '<div class="fact"><b>' + G.bestStreak + '</b><span>beste Serie</span></div></div>' +
-      (newBadges.length ? '<h2 class="plain-h">Neue Abzeichen!</h2><div class="newbadges">' + badgeHtml + "</div>" : "") +
-      missedHtml +
+      '<div class="fact"><b>+' + (G.coinsGained + bonus) + " " + A.coin() + "</b><span>Goldmünzen</span></div></div>" +
+      (newBadges.length ? '<h2 class="plain-h">' + (newBadges.length > 1 ? "Neue Abzeichen!" : "Neues Abzeichen!") + '</h2><div class="newbadges">' + badgeHtml + "</div>" : "") +
       '<div class="actions" id="resActions">' +
-      '<button class="btn btn-gold btn-big" data-act="again">' + A.ICON.refresh + "Noch eine Reise</button>" +
-      (G.missed.length ? '<button class="btn btn-red btn-big" data-act="redo">' + A.ICON.anchor + "Fehler üben</button>" : "") +
+      (G.missed.length
+        ? '<button class="btn btn-gold btn-big" data-act="redo">' + A.ICON.anchor + "Fehler üben</button>"
+        : '<button class="btn btn-gold btn-big" data-act="again" data-mode="' + (G.mode === "fehler" ? "mix" : G.mode) + '">' + A.ICON.refresh + "Noch eine Reise</button>") +
       '<button class="btn btn-wood btn-big" data-act="home">Zum Hafen</button></div></section></div></div>';
     window.scrollTo(0, 0);
     kaiSay(msg, stars >= 2 ? "cheer" : "happy", 4000);
     S.fanfare(); if (newBadges.length) later(function () { S.badge(); }, 900);
     if (stars >= 2) confetti();
-    var lastG = G;
-    $app.querySelector("[data-act=again]").dataset.mode = lastG.mode === "fehler" ? "mix" : lastG.mode;
-    window.__lastMissed = lastG.missed;
+    window.__lastMissed = G.missed;
   }
 
   /* ============================================================
@@ -813,20 +788,18 @@
       return '<tr class="' + (tt === t ? "sel" : "") + '" data-t="' + tt + '"><td>' + tname(tt) + "</td><td>" + sentenceHTML(toks, true).replace(/class="w v"/g, 'class="w v" style="color:var(--c-' + tt + ')"') + "</td></tr>";
     }).join("");
     return '<div class="paper fibel-card" data-t="' + t + '"><span class="tense-pill" data-t="' + t + '">' + info.name + " <small>" + info.alt + "</small></span>" +
-      '<p class="rule">' + esc(info.rule) + "</p>" +
-      "<dl><dt>So geht’s:</dt><dd>" + esc(info.formula) + "</dd>" +
-      "<dt>Signalwörter:</dt><dd>" + info.signal.map(function (s) { return '<span class="signal">' + esc(s) + "</span>"; }).join("") + "</dd>" +
-      "<dt>Tipp:</dt><dd>" + esc(info.tip) + "</dd></dl>" +
-      '<p class="prompt">Ein Verb in allen Zeitformen: <b>' + esc(it.verb) + "</b></p>" +
+      '<p class="rule">' + esc(info.formula) + "</p>" +
+      '<p class="signals"><span class="lbl">Signalwörter:</span> ' + info.signal.map(function (sg) { return '<span class="signal">' + esc(sg) + "</span>"; }).join("") + "</p>" +
+      '<p class="cap">Ein Verb in allen Zeitformen: <b>' + esc(it.verb) + "</b></p>" +
       '<table class="mini-table" data-t="' + t + '"><tbody>' + rows + "</tbody></table>" +
-      '<div class="actions" style="margin-top:12px"><button class="btn btn-light" data-act="fib-new">' + A.ICON.refresh + "Anderes Beispiel</button>" +
+      '<div class="actions"><button class="btn btn-light" data-act="fib-new">' + A.ICON.refresh + "Anderes Beispiel</button>" +
       '<button class="btn btn-gold" data-act="start" data-mode="' + t + '">' + info.name + " üben " + A.ICON.play + "</button></div></div>";
   }
   var FIBEL_KAI = {
-    praesens: "Das Präsens ist die Gegenwart. Es erzählt, was jetzt passiert.",
-    praeteritum: "Das Präteritum erzählt, was früher war. Es besteht nur aus einem Wort.",
-    perfekt: "Das Perfekt erzählt auch von früher. Du brauchst haben oder sein und das Partizip.",
-    futur: "Das Futur ist die Zukunft. Du brauchst werden und die Grundform.",
+    praesens: "Das Präsens erzählt, was JETZT passiert.",
+    praeteritum: "Das Präteritum erzählt, was früher war. Es ist nur EIN Wort.",
+    perfekt: "Das Perfekt erzählt auch von früher. Es hat ZWEI Teile.",
+    futur: "Das Futur erzählt, was noch kommt. Es hat ZWEI Teile.",
   };
   function showFibel() {
     clearTimers(); clearConfetti(); G = null; ORD = null;
@@ -843,7 +816,7 @@
       '<div class="stage"><aside class="kai-col"><div class="kai-box"><div class="kai-fig">' + A.kai() + '</div><div class="speech" id="speech"></div></div></aside>' +
       '<div id="fibelCard">' + fibelCardHTML() + "</div></div></div>";
     window.scrollTo(0, 0);
-    kaiSay("Tippe auf eine Zeitform auf der Zeitreise-Leiste. Mein Schiff fliegt dann dorthin!", "happy");
+    kaiSay("Tippe auf eine Zeitform. Mein Schiff fliegt dorthin!", "happy");
   }
   function fibelSelect(t) {
     FB.t = t;
@@ -865,18 +838,21 @@
     var earned = D.BADGES.filter(function (b) { return st.badges[b.id]; }).length;
     var badges = D.BADGES.map(function (b) {
       var got = !!st.badges[b.id];
-      return '<div class="badge ' + (got ? "" : "locked") + '"><div class="medal">' + (got ? b.icon : "?") + "</div><b>" + esc(b.name) + "</b><small>" + esc(b.desc) + "</small></div>";
+      return '<button type="button" class="badge ' + (got ? "" : "locked") + '" data-act="badge" data-id="' + b.id + '" aria-label="' + esc(b.name) + (got ? ", geschafft" : ", noch nicht geschafft") + '">' +
+        '<span class="medal">' + (got ? b.icon : "?") + "</span><b>" + esc(b.name) + "</b></button>";
     }).join("");
     $app.innerHTML =
-      '<div class="screen truhe"><div class="page-head"><button class="btn btn-light btn-round" data-act="home" aria-label="Zurück zum Hafen">' + A.ICON.back + "</button><h1>Meine Schatztruhe</h1>" +
+      '<div class="screen truhe"><div class="page-head"><button class="btn btn-light btn-round" data-act="home" aria-label="Zurück zum Hafen">' + A.ICON.back + "</button><h1>Schatztruhe</h1>" +
       '<div class="right" style="margin-left:auto;display:flex;gap:8px">' + soundBtn() + "</div></div>" +
-      '<div class="paper"><div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap"><div style="width:120px">' + A.chest(true) + '</div><div style="flex:1;min-width:220px">' +
-      '<div class="facts" style="justify-content:flex-start;margin:0"><div class="fact"><b>' + st.coins + " " + A.coin() + '</b><span>Goldmünzen</span></div><div class="fact"><b>' + esc(rank.name) + "</b><span>dein Rang</span></div></div>" +
-      (next ? '<div class="rankbar" role="progressbar" aria-label="Fortschritt zum nächsten Rang" aria-valuemin="0" aria-valuemax="100" aria-valuenow="' + pct + '"><i style="width:' + pct + '%"></i></div><small>Noch ' + (next.min - st.coins) + " Münzen bis zum Rang <b>" + esc(next.name) + "</b></small>" : "<p><b>Du hast den höchsten Rang erreicht!</b></p>") +
+      '<div class="paper truhe-top"><div class="chest-wrap">' + A.chest(true) + '</div><div class="truhe-info">' +
+      '<div class="rank-name">' + esc(rank.name) + '</div><div class="rank-coins">' + A.coin() + " " + st.coins + " Goldmünzen</div>" +
+      (next ? '<div class="rankbar" role="progressbar" aria-label="Fortschritt zum nächsten Rang" aria-valuemin="0" aria-valuemax="100" aria-valuenow="' + pct + '"><i style="width:' + pct + '%"></i></div><small>Noch ' + (next.min - st.coins) + " Münzen bis zum Rang <b>" + esc(next.name) + "</b></small>" : "<p><b>Höchster Rang erreicht!</b></p>") +
       "</div></div>" +
-      '<div class="stats-row"><div class="fact"><b>' + st.rounds + '</b><span>Reisen</span></div><div class="fact"><b>' + st.perfectRounds + '</b><span>fehlerlose Reisen</span></div><div class="fact"><b>' + st.bestStreak + '</b><span>beste Serie</span></div></div></div>' +
-      '<h2 class="section-title">Abzeichen (' + earned + " von " + D.BADGES.length + ')</h2><div class="badge-grid">' + badges + "</div>" +
-      '<div class="reset-box"><button class="btn btn-outline btn-small" data-act="reset">Fortschritt zurücksetzen (für Eltern und Lehrkräfte)</button></div></div>';
+      '<h2 class="section-title">Abzeichen: ' + earned + " von " + D.BADGES.length + '</h2>' +
+      '<p class="badge-info" id="badgeInfo" role="status">Tippe auf ein Abzeichen.</p>' +
+      '<div class="badge-grid">' + badges + "</div>" +
+      '<div class="reset-box"><button class="btn btn-outline btn-small" data-act="reset">Fortschritt zurücksetzen</button>' +
+      '<p class="foot-note">Dein Fortschritt bleibt nur auf diesem Gerät. Es werden keine Daten verschickt.</p></div></div>';
     window.scrollTo(0, 0);
   }
 
@@ -893,6 +869,12 @@
       case "home": S.click(); showHome(); break;
       case "fibel": S.click(); showFibel(); break;
       case "truhe": S.click(); showTruhe(); break;
+      case "badge":
+        S.click();
+        var bd = D.BADGES.filter(function (x) { return x.id === b.dataset.id; })[0], got = !!Store.get().badges[bd.id];
+        $("#badgeInfo").textContent = bd.name + (got ? " – geschafft! " : " – so geht’s: ") + bd.desc;
+        $$(".badge-grid .badge").forEach(function (x) { x.classList.toggle("sel", x === b); });
+        break;
       case "start": S.click(); startRound(b.dataset.mode); break;
       case "again": S.click(); startRound(b.dataset.mode); break;
       case "redo": S.click(); startRound("fehler", window.__lastMissed); break;
